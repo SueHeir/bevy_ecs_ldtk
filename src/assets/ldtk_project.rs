@@ -249,11 +249,13 @@ impl AssetLoader for LdtkProjectLoader {
                 warn!("{identifier} tileset cannot be loaded, it has a null relative path.");
             }
         }
-
+        #[cfg(feature = "render")]
         let int_grid_image_handle = data
             .defs
             .create_int_grid_image()
             .map(|image| load_context.add_labeled_asset("int_grid_image".to_string(), image));
+        #[cfg(not(feature = "render"))]
+        let int_grid_image_handle = None;
 
         let ldtk_project = if data.external_levels {
             #[cfg(feature = "external_levels")]
