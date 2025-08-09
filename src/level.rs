@@ -414,6 +414,9 @@ pub fn spawn_level(
                     _ => TilemapSpacing::default(),
                 };
 
+                #[cfg(not(feature = "render"))]
+                continue;
+
                 let texture = match (tileset_definition, int_grid_image_handle) {
                     (Some(tileset_definition), _) => TilemapTexture::Single(
                         tileset_map.get(&tileset_definition.uid).unwrap().clone(),
