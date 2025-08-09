@@ -235,6 +235,8 @@ impl AssetLoader for LdtkProjectLoader {
         let data: LdtkJson = serde_json::from_slice(&bytes)?;
 
         let mut tileset_map: HashMap<i32, Handle<Image>> = HashMap::new();
+
+        #[cfg(feature = "render")]
         for tileset in &data.defs.tilesets {
             if let Some(tileset_path) = &tileset.rel_path {
                 let asset_path = ldtk_path_to_asset_path(load_context.path(), tileset_path);
