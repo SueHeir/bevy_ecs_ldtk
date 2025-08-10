@@ -46,8 +46,8 @@ impl Plugin for LdtkPlugin {
                 ProcessLdtkApi,
                 (ProcessApiSet::PreClean, ProcessApiSet::Clean).chain(),
             )
-            .init_non_send_resource::<app::LdtkEntityMap>()
-            .init_non_send_resource::<app::LdtkIntCellMap>()
+            .init_non_send_resource::<app::LdtkEntityMapBackend>()
+            .init_non_send_resource::<app::LdtkIntCellMapBackend>()
             .init_resource::<resources::LdtkSettings>()
             .add_event::<resources::LevelEvent>()
             .add_systems(

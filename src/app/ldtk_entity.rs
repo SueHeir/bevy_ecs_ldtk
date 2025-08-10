@@ -436,4 +436,5 @@ impl<B: LdtkEntity + Bundle> PhantomLdtkEntityTrait for PhantomLdtkEntity<B> {
 }
 
 /// Used by [LdtkEntityAppExt](super::LdtkEntityAppExt) to associate Ldtk entity identifiers with [LdtkEntity]s.
-pub type LdtkEntityMap = HashMap<(Option<String>, Option<String>), Box<dyn PhantomLdtkEntityTrait>>;
+pub type LdtkEntityMapBackend =
+    HashMap<(Option<String>, Option<String>), Box<dyn PhantomLdtkEntityTrait>>;

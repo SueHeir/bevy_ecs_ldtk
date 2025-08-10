@@ -2,8 +2,8 @@
 
 use crate::{
     app::{
-        LdtkEntity, LdtkEntityMap, LdtkIntCellMap, PhantomLdtkEntity, PhantomLdtkEntityTrait,
-        PhantomLdtkIntCell, PhantomLdtkIntCellTrait,
+        LdtkEntity, LdtkEntityMapBackend, LdtkIntCellMapBackend, PhantomLdtkEntity,
+        PhantomLdtkEntityTrait, PhantomLdtkIntCell, PhantomLdtkIntCellTrait,
     },
     components::*,
     ldtk::{
@@ -213,8 +213,8 @@ pub fn spawn_level(
     asset_server: &AssetServer,
     images: &Assets<Image>,
     texture_atlases: &mut Assets<TextureAtlasLayout>,
-    ldtk_entity_map: &LdtkEntityMap,
-    ldtk_int_cell_map: &LdtkIntCellMap,
+    ldtk_entity_map: &LdtkEntityMapBackend,
+    ldtk_int_cell_map: &LdtkIntCellMapBackend,
     entity_definition_map: &HashMap<i32, &EntityDefinition>,
     layer_definition_map: &HashMap<i32, &LayerDefinition>,
     tileset_map: &HashMap<i32, Handle<Image>>,

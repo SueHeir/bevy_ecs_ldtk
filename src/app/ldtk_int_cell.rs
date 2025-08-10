@@ -239,4 +239,5 @@ impl<B: LdtkIntCell + Bundle> PhantomLdtkIntCellTrait for PhantomLdtkIntCell<B> 
 }
 
 /// Used by [LdtkIntCellAppExt](super::LdtkIntCellAppExt) to associate Ldtk IntGrid values with [LdtkIntCell]s.
-pub type LdtkIntCellMap = HashMap<(Option<String>, Option<i32>), Box<dyn PhantomLdtkIntCellTrait>>;
+pub type LdtkIntCellMapBackend =
+    HashMap<(Option<String>, Option<i32>), Box<dyn PhantomLdtkIntCellTrait>>;

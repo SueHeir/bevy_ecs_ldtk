@@ -3,7 +3,7 @@
 #[cfg(feature = "render")]
 use crate::resources::SetClearColor;
 use crate::{
-    app::{LdtkEntityMap, LdtkIntCellMap},
+    app::{LdtkEntityMapBackend, LdtkIntCellMapBackend},
     assets::{LdtkProject, LdtkProjectData, LevelMetadataAccessor},
     components::*,
     ldtk::{Level, TilesetDefinition},
@@ -218,8 +218,8 @@ pub fn process_ldtk_levels(
     mut texture_atlases: ResMut<Assets<TextureAtlasLayout>>,
     ldtk_project_assets: Res<Assets<LdtkProject>>,
     #[cfg(feature = "external_levels")] level_assets: Res<Assets<LdtkExternalLevel>>,
-    ldtk_entity_map: NonSend<LdtkEntityMap>,
-    ldtk_int_cell_map: NonSend<LdtkIntCellMap>,
+    ldtk_entity_map: NonSend<LdtkEntityMapBackend>,
+    ldtk_int_cell_map: NonSend<LdtkIntCellMapBackend>,
     ldtk_query: Query<&LdtkProjectHandle>,
     level_query: Query<
         (

@@ -110,16 +110,16 @@ impl LdtkIntCellAppExt for App {
         let new_entry = Box::new(PhantomLdtkIntCell::<B>::new());
         match self
             .world_mut()
-            .get_non_send_resource_mut::<LdtkIntCellMap>()
+            .get_non_send_resource_mut::<LdtkIntCellMapBackend>()
         {
             Some(mut entries) => {
                 entries.insert((layer_identifier, value), new_entry);
             }
             None => {
-                let mut bundle_map = LdtkIntCellMap::new();
+                let mut bundle_map = LdtkIntCellMapBackend::new();
                 bundle_map.insert((layer_identifier, value), new_entry);
                 self.world_mut()
-                    .insert_non_send_resource::<LdtkIntCellMap>(bundle_map);
+                    .insert_non_send_resource::<LdtkIntCellMapBackend>(bundle_map);
             }
         }
         self
@@ -161,7 +161,7 @@ mod tests {
 
         let ldtk_int_cell_map = app
             .world_mut()
-            .get_non_send_resource::<LdtkIntCellMap>()
+            .get_non_send_resource::<LdtkIntCellMapBackend>()
             .unwrap();
 
         assert!(ldtk_int_cell_map.contains_key(&(Some("layer".to_string()), Some(1))));
