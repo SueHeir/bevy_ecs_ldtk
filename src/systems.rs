@@ -235,6 +235,7 @@ pub fn process_ldtk_levels(
     mut level_events: EventWriter<LevelEvent>,
     ldtk_settings: Res<LdtkSettings>,
 ) {
+    info!("function_called");
     for (ldtk_entity, level_iid, child_of, respawn, children) in level_query.iter() {
         // Checking if the level has any children is an okay method of checking whether it has
         // already been processed.
