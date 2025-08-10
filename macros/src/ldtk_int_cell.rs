@@ -72,10 +72,10 @@ pub fn expand_ldtk_int_cell_derive(ast: syn::DeriveInput) -> proc_macro::TokenSt
     };
 
     let gen = quote! {
-        impl #impl_generics bevy_ecs_ldtk::prelude::LdtkIntCell for #struct_name #ty_generics #where_clause {
+        impl #impl_generics bevy_ecs_ldtk_backend::prelude::LdtkIntCell for #struct_name #ty_generics #where_clause {
             fn bundle_int_cell(
-                int_grid_cell: bevy_ecs_ldtk::prelude::IntGridCell,
-                layer_instance: &bevy_ecs_ldtk::prelude::LayerInstance,
+                int_grid_cell: bevy_ecs_ldtk_backend::prelude::IntGridCell,
+                layer_instance: &bevy_ecs_ldtk_backend::prelude::LayerInstance,
             ) -> Self {
                 Self {
                     #(#field_constructions)*
@@ -98,7 +98,7 @@ fn expand_ldtk_int_cell_attribute(
     {
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: <#field_type as bevy_ecs_ldtk::prelude::LdtkIntCell>::bundle_int_cell(int_grid_cell, layer_instance),
+                #field_name: <#field_type as bevy_ecs_ldtk_backend::prelude::LdtkIntCell>::bundle_int_cell(int_grid_cell, layer_instance),
             }
         }
         _ => panic!("#[ldtk_int_cell] attribute should take the form #[ldtk_int_cell]"),
@@ -116,7 +116,7 @@ fn expand_from_int_grid_cell_attribute(
     {
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: <#field_type as From<bevy_ecs_ldtk::prelude::IntGridCell>>::from(int_grid_cell),
+                #field_name: <#field_type as From<bevy_ecs_ldtk_backend::prelude::IntGridCell>>::from(int_grid_cell),
             }
         }
         _ => {
