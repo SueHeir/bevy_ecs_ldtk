@@ -11,6 +11,7 @@ pub use level_set::LevelSet;
 pub use crate::ldtk::EntityInstance;
 use crate::{
     ldtk::{LayerInstance, Type},
+    level::TilePos,
     prelude::LdtkProject,
     utils::ldtk_grid_coords_to_grid_coords,
 };
@@ -100,20 +101,20 @@ impl From<GridCoords> for IVec2 {
     }
 }
 
-// impl From<TilePos> for GridCoords {
-//     fn from(tile_pos: TilePos) -> Self {
-//         GridCoords {
-//             x: tile_pos.x as i32,
-//             y: tile_pos.y as i32,
-//         }
-//     }
-// }
+impl From<TilePos> for GridCoords {
+    fn from(tile_pos: TilePos) -> Self {
+        GridCoords {
+            x: tile_pos.x as i32,
+            y: tile_pos.y as i32,
+        }
+    }
+}
 
-// impl From<GridCoords> for TilePos {
-//     fn from(grid_coords: GridCoords) -> Self {
-//         TilePos::new(grid_coords.x as u32, grid_coords.y as u32)
-//     }
-// }
+impl From<GridCoords> for TilePos {
+    fn from(grid_coords: GridCoords) -> Self {
+        TilePos::new(grid_coords.x as u32, grid_coords.y as u32)
+    }
+}
 
 impl Add<GridCoords> for GridCoords {
     type Output = GridCoords;

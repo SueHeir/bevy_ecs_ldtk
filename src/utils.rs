@@ -6,7 +6,11 @@ use crate::{
     components::{GridCoords, IntGridCell},
 };
 
-use crate::{components::TileGridBundle, ldtk::*};
+use crate::{
+    components::TileGridBundle,
+    ldtk::*,
+    level::{TilePos, TileStorage, TilemapId, TilemapSize},
+};
 use bevy::prelude::*;
 // use bevy_ecs_tilemap::{
 //     map::{TilemapId, TilemapSize},
@@ -240,27 +244,27 @@ pub fn ldtk_pixel_coords_to_translation_pivoted(
 ///
 /// This allows for more methods to be performed on the [LayerBuilder] before building it.
 /// However, the performance cons of using non-batch methods still apply here.
-// pub(crate) fn set_all_tiles_with_func(
-//     commands: &mut Commands,
-//     storage: &mut TileStorage,
-//     size: TilemapSize,
-//     tilemap_id: TilemapId,
-//     mut func: impl FnMut(TilePos) -> Option<TileGridBundle>,
-// ) {
-//     for x in 0..size.x {
-//         for y in 0..size.y {
-//             let tile_pos = TilePos { x, y };
-//             let tile_entity = func(tile_pos)
-//                 .map(|tile_bundle| commands.spawn(tile_bundle).insert(tilemap_id).id());
-//             match tile_entity {
-//                 Some(tile_entity) => storage.set(&tile_pos, tile_entity),
-//                 None => {
-//                     storage.remove(&tile_pos);
-//                 }
-//             }
-//         }
-//     }
-// }
+pub(crate) fn set_all_tiles_with_func(
+    commands: &mut Commands,
+    storage: &mut TileStorage,
+    size: TilemapSize,
+    tilemap_id: TilemapId,
+    mut func: impl FnMut(TilePos) -> Option<TileGridBundle>,
+) {
+    for x in 0..size.x {
+        for y in 0..size.y {
+            let tile_pos = TilePos { x, y };
+            let tile_entity = func(tile_pos)
+                .map(|tile_bundle| commands.spawn(tile_bundle).insert(tilemap_id).id());
+            match tile_entity {
+                Some(tile_entity) => storage.set(&tile_pos, tile_entity),
+                None => {
+                    storage.remove(&tile_pos);
+                }
+            }
+        }
+    }
+}
 
 /// Wraps `a` and `b` in an [Option] and tries each [Some]/[None] permutation as inputs to `func`,
 /// returning the first non-none result of `func`.

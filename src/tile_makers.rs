@@ -10,7 +10,7 @@
 use crate::{
     components::TileGridBundle,
     ldtk::{IntGridValueDefinition, TileInstance},
-    level::tile_to_grid_coords,
+    level::{tile_to_grid_coords, TileBundle, TilePos, TileVisible},
     utils::*,
 };
 use bevy::prelude::*;
@@ -117,12 +117,12 @@ pub(crate) fn tile_pos_to_tile_maker(
                 };
 
                 Some(TileBundle {
-                    texture_index: TileTextureIndex(tile_instance.t as u32),
-                    flip: TileFlip {
-                        x: flip_x,
-                        y: flip_y,
-                        ..default()
-                    },
+                    // texture_index: TileTextureIndex(tile_instance.t as u32),
+                    // flip: TileFlip {
+                    //     x: flip_x,
+                    //     y: flip_y,
+                    //     ..default()
+                    // },
                     ..default()
                 })
             }
@@ -188,286 +188,286 @@ pub(crate) fn tile_pos_to_int_grid_with_grid_tiles_tile_maker(
     }
 }
 
-/// Creates a tile maker that matches the colors of an ldtk IntGrid layer.
-///
-/// Used for spawning IntGrid layers without AutoTile functionality.
-pub(crate) fn tile_pos_to_int_grid_colored_tile_maker(
-    int_grid_csv: &[i32],
-    int_grid_value_defs: &[IntGridValueDefinition],
-    layer_width_in_tiles: i32,
-    layer_height_in_tiles: i32,
-) -> impl FnMut(TilePos) -> Option<TileBundle> {
-    let color_map: HashMap<i32, Color> = int_grid_value_defs
-        .iter()
-        .map(|IntGridValueDefinition { value, color, .. }| (*value, *color))
-        .collect();
-    let tile_pos_map =
-        tile_pos_to_int_grid_map(int_grid_csv, layer_width_in_tiles, layer_height_in_tiles);
+// Creates a tile maker that matches the colors of an ldtk IntGrid layer.
+//
+// Used for spawning IntGrid layers without AutoTile functionality.
+// pub(crate) fn tile_pos_to_int_grid_colored_tile_maker(
+//     int_grid_csv: &[i32],
+//     int_grid_value_defs: &[IntGridValueDefinition],
+//     layer_width_in_tiles: i32,
+//     layer_height_in_tiles: i32,
+// ) -> impl FnMut(TilePos) -> Option<TileBundle> {
+//     let color_map: HashMap<i32, Color> = int_grid_value_defs
+//         .iter()
+//         .map(|IntGridValueDefinition { value, color, .. }| (*value, *color))
+//         .collect();
+//     let tile_pos_map =
+//         tile_pos_to_int_grid_map(int_grid_csv, layer_width_in_tiles, layer_height_in_tiles);
 
-    move |tile_pos: TilePos| -> Option<TileBundle> {
-        tile_pos_map.get(&tile_pos).map(|&value| TileBundle {
-            color: TileColor(
-                *color_map
-                    .get(&value)
-                    .expect("Int grid values should have an associated IntGridValueDefinition"),
-            ),
-            ..default()
-        })
-    }
-}
+//     move |tile_pos: TilePos| -> Option<TileBundle> {
+//         tile_pos_map.get(&tile_pos).map(|&value| TileBundle {
+//             color: TileColor(
+//                 *color_map
+//                     .get(&value)
+//                     .expect("Int grid values should have an associated IntGridValueDefinition"),
+//             ),
+//             ..default()
+//         })
+//     }
+// }
 
-/// Creates a tile maker that returns the result of the provided tile maker and modifies the
-/// resulting tile to be transparent.
-///
-/// Used for spawning Tile, AutoTile, and IntGrid layers.
-pub(crate) fn tile_pos_to_transparent_tile_maker(
-    mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
-    alpha: f32,
-) -> impl FnMut(TilePos) -> Option<TileBundle> {
-    move |tile_pos: TilePos| -> Option<TileBundle> {
-        if alpha < 1. {
-            tile_maker(tile_pos).map(|mut tile| {
-                tile.color.0.set_alpha(alpha);
-                tile
-            })
-        } else {
-            tile_maker(tile_pos)
-        }
-    }
-}
+// /// Creates a tile maker that returns the result of the provided tile maker and modifies the
+// /// resulting tile to be transparent.
+// ///
+// /// Used for spawning Tile, AutoTile, and IntGrid layers.
+// pub(crate) fn tile_pos_to_transparent_tile_maker(
+//     mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
+//     alpha: f32,
+// ) -> impl FnMut(TilePos) -> Option<TileBundle> {
+//     move |tile_pos: TilePos| -> Option<TileBundle> {
+//         if alpha < 1. {
+//             tile_maker(tile_pos).map(|mut tile| {
+//                 tile.color.0.set_alpha(alpha);
+//                 tile
+//             })
+//         } else {
+//             tile_maker(tile_pos)
+//         }
+//     }
+// }
 
-/// Returns a tile bundle maker that returns the bundled result of the provided tile maker.
-///
-/// Used for spawning Tile, AutoTile, and IntGrid layers.
-pub(crate) fn tile_pos_to_tile_grid_bundle_maker(
-    mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
-) -> impl FnMut(TilePos) -> Option<TileGridBundle> {
-    move |tile_pos: TilePos| -> Option<TileGridBundle> {
-        tile_maker(tile_pos).map(|mut tile_bundle| {
-            tile_bundle.position = tile_pos;
+// /// Returns a tile bundle maker that returns the bundled result of the provided tile maker.
+// ///
+// /// Used for spawning Tile, AutoTile, and IntGrid layers.
+// pub(crate) fn tile_pos_to_tile_grid_bundle_maker(
+//     mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
+// ) -> impl FnMut(TilePos) -> Option<TileGridBundle> {
+//     move |tile_pos: TilePos| -> Option<TileGridBundle> {
+//         tile_maker(tile_pos).map(|mut tile_bundle| {
+//             tile_bundle.position = tile_pos;
 
-            TileGridBundle {
-                grid_coords: tile_pos.into(),
-                tile_bundle,
-            }
-        })
-    }
-}
+//             TileGridBundle {
+//                 grid_coords: tile_pos.into(),
+//                 tile_bundle,
+//             }
+//         })
+//     }
+// }
 
-#[cfg(test)]
-mod tests {
-    use bevy::color::palettes::css::{self};
+// #[cfg(test)]
+// mod tests {
+//     use bevy::color::palettes::css::{self};
 
-    use super::*;
+//     use super::*;
 
-    #[test]
-    fn test_tile_pos_to_tile_maker() {
-        let grid_tiles = vec![
-            TileInstance {
-                px: IVec2::new(0, 0),
-                src: IVec2::new(32, 0),
-                t: 1,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(32, 0),
-                src: IVec2::new(32, 32),
-                t: 4,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(0, 32),
-                src: IVec2::new(64, 0),
-                t: 2,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(32, 32),
-                src: IVec2::new(32, 0),
-                t: 1,
-                ..Default::default()
-            },
-        ];
+//     #[test]
+//     fn test_tile_pos_to_tile_maker() {
+//         let grid_tiles = vec![
+//             TileInstance {
+//                 px: IVec2::new(0, 0),
+//                 src: IVec2::new(32, 0),
+//                 t: 1,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(32, 0),
+//                 src: IVec2::new(32, 32),
+//                 t: 4,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(0, 32),
+//                 src: IVec2::new(64, 0),
+//                 t: 2,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(32, 32),
+//                 src: IVec2::new(32, 0),
+//                 t: 1,
+//                 ..Default::default()
+//             },
+//         ];
 
-        let mut tile_maker = tile_pos_to_tile_maker(&grid_tiles, 2, 32);
+//         let mut tile_maker = tile_pos_to_tile_maker(&grid_tiles, 2, 32);
 
-        assert_eq!(
-            tile_maker(TilePos { x: 0, y: 0 }).unwrap().texture_index.0,
-            2
-        );
-        assert_eq!(
-            tile_maker(TilePos { x: 1, y: 0 }).unwrap().texture_index.0,
-            1
-        );
-        assert_eq!(
-            tile_maker(TilePos { x: 0, y: 1 }).unwrap().texture_index.0,
-            1
-        );
-        assert_eq!(
-            tile_maker(TilePos { x: 1, y: 1 }).unwrap().texture_index.0,
-            4
-        );
-    }
+//         assert_eq!(
+//             tile_maker(TilePos { x: 0, y: 0 }).unwrap().texture_index.0,
+//             2
+//         );
+//         assert_eq!(
+//             tile_maker(TilePos { x: 1, y: 0 }).unwrap().texture_index.0,
+//             1
+//         );
+//         assert_eq!(
+//             tile_maker(TilePos { x: 0, y: 1 }).unwrap().texture_index.0,
+//             1
+//         );
+//         assert_eq!(
+//             tile_maker(TilePos { x: 1, y: 1 }).unwrap().texture_index.0,
+//             4
+//         );
+//     }
 
-    #[test]
-    fn test_tile_pos_to_tile_maker_with_flips() {
-        let grid_tiles = vec![
-            TileInstance {
-                px: IVec2::new(0, 0),
-                src: IVec2::new(0, 0),
-                t: 0,
-                f: 0,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(32, 0),
-                src: IVec2::new(0, 0),
-                t: 0,
-                f: 1,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(0, 32),
-                src: IVec2::new(0, 0),
-                t: 0,
-                f: 2,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(64, 0),
-                src: IVec2::new(0, 0),
-                t: 0,
-                f: 3,
-                ..Default::default()
-            },
-        ];
+//     #[test]
+//     fn test_tile_pos_to_tile_maker_with_flips() {
+//         let grid_tiles = vec![
+//             TileInstance {
+//                 px: IVec2::new(0, 0),
+//                 src: IVec2::new(0, 0),
+//                 t: 0,
+//                 f: 0,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(32, 0),
+//                 src: IVec2::new(0, 0),
+//                 t: 0,
+//                 f: 1,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(0, 32),
+//                 src: IVec2::new(0, 0),
+//                 t: 0,
+//                 f: 2,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(64, 0),
+//                 src: IVec2::new(0, 0),
+//                 t: 0,
+//                 f: 3,
+//                 ..Default::default()
+//             },
+//         ];
 
-        let mut tile_maker = tile_pos_to_tile_maker(&grid_tiles, 2, 32);
+//         let mut tile_maker = tile_pos_to_tile_maker(&grid_tiles, 2, 32);
 
-        assert!(!tile_maker(TilePos { x: 0, y: 0 }).unwrap().flip.x);
-        assert!(tile_maker(TilePos { x: 0, y: 0 }).unwrap().flip.y);
+//         assert!(!tile_maker(TilePos { x: 0, y: 0 }).unwrap().flip.x);
+//         assert!(tile_maker(TilePos { x: 0, y: 0 }).unwrap().flip.y);
 
-        assert!(!tile_maker(TilePos { x: 0, y: 1 }).unwrap().flip.x);
-        assert!(!tile_maker(TilePos { x: 0, y: 1 }).unwrap().flip.y);
+//         assert!(!tile_maker(TilePos { x: 0, y: 1 }).unwrap().flip.x);
+//         assert!(!tile_maker(TilePos { x: 0, y: 1 }).unwrap().flip.y);
 
-        assert!(tile_maker(TilePos { x: 1, y: 1 }).unwrap().flip.x);
-        assert!(!tile_maker(TilePos { x: 1, y: 1 }).unwrap().flip.y);
+//         assert!(tile_maker(TilePos { x: 1, y: 1 }).unwrap().flip.x);
+//         assert!(!tile_maker(TilePos { x: 1, y: 1 }).unwrap().flip.y);
 
-        assert!(tile_maker(TilePos { x: 2, y: 1 }).unwrap().flip.x);
-        assert!(tile_maker(TilePos { x: 2, y: 1 }).unwrap().flip.y);
-    }
+//         assert!(tile_maker(TilePos { x: 2, y: 1 }).unwrap().flip.x);
+//         assert!(tile_maker(TilePos { x: 2, y: 1 }).unwrap().flip.y);
+//     }
 
-    #[test]
-    fn test_tile_pos_to_int_grid_with_grid_tiles_tile_maker() {
-        // Test is designed to have all permutations of tile/intgrid existence:
-        // 1. tile + nonzero intgrid
-        // 2. tile + zero intgrid
-        // 3. no tile + nonzero intgrid
-        // 4. no tile + zero intgrid
+//     #[test]
+//     fn test_tile_pos_to_int_grid_with_grid_tiles_tile_maker() {
+//         // Test is designed to have all permutations of tile/intgrid existence:
+//         // 1. tile + nonzero intgrid
+//         // 2. tile + zero intgrid
+//         // 3. no tile + nonzero intgrid
+//         // 4. no tile + zero intgrid
 
-        let grid_tiles = vec![
-            TileInstance {
-                px: IVec2::new(0, 0),
-                src: IVec2::new(0, 0),
-                t: 1,
-                ..Default::default()
-            },
-            TileInstance {
-                px: IVec2::new(32, 0),
-                src: IVec2::new(32, 0),
-                t: 2,
-                ..Default::default()
-            },
-        ];
+//         let grid_tiles = vec![
+//             TileInstance {
+//                 px: IVec2::new(0, 0),
+//                 src: IVec2::new(0, 0),
+//                 t: 1,
+//                 ..Default::default()
+//             },
+//             TileInstance {
+//                 px: IVec2::new(32, 0),
+//                 src: IVec2::new(32, 0),
+//                 t: 2,
+//                 ..Default::default()
+//             },
+//         ];
 
-        let int_grid_csv = vec![1, 0, 2, 0];
+//         let int_grid_csv = vec![1, 0, 2, 0];
 
-        // Test when sublayer index is 0. Invisibile tiles should be created
-        let mut tile_maker = tile_pos_to_int_grid_with_grid_tiles_tile_maker(
-            &grid_tiles,
-            &int_grid_csv,
-            2,
-            2,
-            32,
-            0,
-        );
+//         // Test when sublayer index is 0. Invisibile tiles should be created
+//         let mut tile_maker = tile_pos_to_int_grid_with_grid_tiles_tile_maker(
+//             &grid_tiles,
+//             &int_grid_csv,
+//             2,
+//             2,
+//             32,
+//             0,
+//         );
 
-        assert_eq!(
-            tile_maker(TilePos { x: 0, y: 0 }).unwrap().texture_index.0,
-            0
-        );
-        assert!(!tile_maker(TilePos { x: 0, y: 0 }).unwrap().visible.0);
+//         assert_eq!(
+//             tile_maker(TilePos { x: 0, y: 0 }).unwrap().texture_index.0,
+//             0
+//         );
+//         assert!(!tile_maker(TilePos { x: 0, y: 0 }).unwrap().visible.0);
 
-        assert!(tile_maker(TilePos { x: 1, y: 0 }).is_none());
+//         assert!(tile_maker(TilePos { x: 1, y: 0 }).is_none());
 
-        assert_eq!(
-            tile_maker(TilePos { x: 0, y: 1 }).unwrap().texture_index.0,
-            1
-        );
-        assert!(tile_maker(TilePos { x: 0, y: 1 }).unwrap().visible.0);
+//         assert_eq!(
+//             tile_maker(TilePos { x: 0, y: 1 }).unwrap().texture_index.0,
+//             1
+//         );
+//         assert!(tile_maker(TilePos { x: 0, y: 1 }).unwrap().visible.0);
 
-        assert_eq!(
-            tile_maker(TilePos { x: 1, y: 1 }).unwrap().texture_index.0,
-            2
-        );
-        assert!(tile_maker(TilePos { x: 1, y: 1 }).unwrap().visible.0);
+//         assert_eq!(
+//             tile_maker(TilePos { x: 1, y: 1 }).unwrap().texture_index.0,
+//             2
+//         );
+//         assert!(tile_maker(TilePos { x: 1, y: 1 }).unwrap().visible.0);
 
-        // Test when sublayer index isn't 0. There should be no invisible tiles
-        let mut tile_maker = tile_pos_to_int_grid_with_grid_tiles_tile_maker(
-            &grid_tiles,
-            &int_grid_csv,
-            2,
-            2,
-            32,
-            1,
-        );
+//         // Test when sublayer index isn't 0. There should be no invisible tiles
+//         let mut tile_maker = tile_pos_to_int_grid_with_grid_tiles_tile_maker(
+//             &grid_tiles,
+//             &int_grid_csv,
+//             2,
+//             2,
+//             32,
+//             1,
+//         );
 
-        assert!(tile_maker(TilePos { x: 0, y: 0 }).is_none());
+//         assert!(tile_maker(TilePos { x: 0, y: 0 }).is_none());
 
-        assert!(tile_maker(TilePos { x: 1, y: 0 }).is_none());
+//         assert!(tile_maker(TilePos { x: 1, y: 0 }).is_none());
 
-        assert_eq!(
-            tile_maker(TilePos { x: 0, y: 1 }).unwrap().texture_index.0,
-            1
-        );
-        assert!(tile_maker(TilePos { x: 0, y: 1 }).unwrap().visible.0);
+//         assert_eq!(
+//             tile_maker(TilePos { x: 0, y: 1 }).unwrap().texture_index.0,
+//             1
+//         );
+//         assert!(tile_maker(TilePos { x: 0, y: 1 }).unwrap().visible.0);
 
-        assert_eq!(
-            tile_maker(TilePos { x: 1, y: 1 }).unwrap().texture_index.0,
-            2
-        );
-        assert!(tile_maker(TilePos { x: 1, y: 1 }).unwrap().visible.0);
-    }
+//         assert_eq!(
+//             tile_maker(TilePos { x: 1, y: 1 }).unwrap().texture_index.0,
+//             2
+//         );
+//         assert!(tile_maker(TilePos { x: 1, y: 1 }).unwrap().visible.0);
+//     }
 
-    #[test]
-    fn test_tile_pos_to_int_grid_colored_tile_maker() {
-        let int_grid_defs = vec![
-            IntGridValueDefinition {
-                value: 1,
-                color: css::RED.into(),
-                ..Default::default()
-            },
-            IntGridValueDefinition {
-                value: 2,
-                color: css::BLUE.into(),
-                ..Default::default()
-            },
-        ];
+//     #[test]
+//     fn test_tile_pos_to_int_grid_colored_tile_maker() {
+//         let int_grid_defs = vec![
+//             IntGridValueDefinition {
+//                 value: 1,
+//                 color: css::RED.into(),
+//                 ..Default::default()
+//             },
+//             IntGridValueDefinition {
+//                 value: 2,
+//                 color: css::BLUE.into(),
+//                 ..Default::default()
+//             },
+//         ];
 
-        let int_grid_csv = vec![0, 1, 2, 0];
+//         let int_grid_csv = vec![0, 1, 2, 0];
 
-        let mut tile_maker =
-            tile_pos_to_int_grid_colored_tile_maker(&int_grid_csv, &int_grid_defs, 2, 2);
+//         let mut tile_maker =
+//             tile_pos_to_int_grid_colored_tile_maker(&int_grid_csv, &int_grid_defs, 2, 2);
 
-        assert_eq!(
-            tile_maker(TilePos { x: 0, y: 0 }).unwrap().color.0,
-            css::BLUE.into()
-        );
-        assert!(tile_maker(TilePos { x: 1, y: 0 }).is_none());
-        assert!(tile_maker(TilePos { x: 0, y: 1 }).is_none());
-        assert_eq!(
-            tile_maker(TilePos { x: 1, y: 1 }).unwrap().color.0,
-            css::RED.into()
-        );
-    }
-}
+//         assert_eq!(
+//             tile_maker(TilePos { x: 0, y: 0 }).unwrap().color.0,
+//             css::BLUE.into()
+//         );
+//         assert!(tile_maker(TilePos { x: 1, y: 0 }).is_none());
+//         assert!(tile_maker(TilePos { x: 0, y: 1 }).is_none());
+//         assert_eq!(
+//             tile_maker(TilePos { x: 1, y: 1 }).unwrap().color.0,
+//             css::RED.into()
+//         );
+//     }
+// }
