@@ -1,5 +1,5 @@
 [package]
-name = "bevy_ecs_ldtk"
+name = "bevy_ecs_ldtk_backend"
 description = "An ECS-friendly ldtk plugin for bevy."
 version = "0.12.0"
 edition = "2021"
