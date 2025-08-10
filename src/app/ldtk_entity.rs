@@ -1,6 +1,6 @@
 use crate::{
     components::{EntityInstanceBundle, GridCoords, Worldly},
-    ldtk::{EntityInstanceBackend, LayerInstance, TilesetDefinition},
+    ldtk::{EntityInstance, LayerInstance, TilesetDefinition},
     utils,
 };
 use bevy::{ecs::system::EntityCommands, prelude::*};
@@ -309,7 +309,7 @@ use std::{collections::HashMap, marker::PhantomData};
 ///     foreign: ForeignComponentWithNoDefault,
 /// }
 /// ```
-pub trait LdtkEntityBackend {
+pub trait LdtkEntity {
     /// The constructor used by the plugin when spawning entities from an LDtk file.
     /// Has access to resources/assets most commonly used for spawning 2d objects.
     /// If you need access to more of the [World](bevy::prelude::World), you can create a system that queries for
@@ -323,7 +323,7 @@ pub trait LdtkEntityBackend {
     /// inserted.
     /// So, any custom implementations of these components within this trait will be overwritten.
     fn bundle_entity(
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         layer_instance: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         tileset_definition: Option<&TilesetDefinition>,
@@ -332,9 +332,9 @@ pub trait LdtkEntityBackend {
     ) -> Self;
 }
 
-impl LdtkEntityBackend for EntityInstanceBundle {
+impl LdtkEntity for EntityInstanceBundle {
     fn bundle_entity(
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         _: &LayerInstance,
         _: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -347,9 +347,9 @@ impl LdtkEntityBackend for EntityInstanceBundle {
     }
 }
 
-impl LdtkEntityBackend for Sprite {
+impl LdtkEntity for Sprite {
     fn bundle_entity(
-        _: &EntityInstanceBackend,
+        _: &EntityInstance,
         _: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -360,9 +360,9 @@ impl LdtkEntityBackend for Sprite {
     }
 }
 
-impl LdtkEntityBackend for Worldly {
+impl LdtkEntity for Worldly {
     fn bundle_entity(
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         _: &LayerInstance,
         _: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -373,9 +373,9 @@ impl LdtkEntityBackend for Worldly {
     }
 }
 
-impl LdtkEntityBackend for GridCoords {
+impl LdtkEntity for GridCoords {
     fn bundle_entity(
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         layer_instance: &LayerInstance,
         _: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -387,11 +387,11 @@ impl LdtkEntityBackend for GridCoords {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Hash)]
-pub struct PhantomLdtkEntity<B: LdtkEntityBackend + Bundle> {
+pub struct PhantomLdtkEntity<B: LdtkEntity + Bundle> {
     ldtk_entity: PhantomData<B>,
 }
 
-impl<B: LdtkEntityBackend + Bundle> PhantomLdtkEntity<B> {
+impl<B: LdtkEntity + Bundle> PhantomLdtkEntity<B> {
     pub fn new() -> Self {
         PhantomLdtkEntity::<B> {
             ldtk_entity: PhantomData,
@@ -404,7 +404,7 @@ pub trait PhantomLdtkEntityTrait {
     fn evaluate<'a, 'b>(
         &self,
         commands: &'b mut EntityCommands<'a>,
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         layer_instance: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         tileset_definition: Option<&TilesetDefinition>,
@@ -413,11 +413,11 @@ pub trait PhantomLdtkEntityTrait {
     ) -> &'b mut EntityCommands<'a>;
 }
 
-impl<B: LdtkEntityBackend + Bundle> PhantomLdtkEntityTrait for PhantomLdtkEntity<B> {
+impl<B: LdtkEntity + Bundle> PhantomLdtkEntityTrait for PhantomLdtkEntity<B> {
     fn evaluate<'a, 'b>(
         &self,
         entity_commands: &'b mut EntityCommands<'a>,
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         layer_instance: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         tileset_definition: Option<&TilesetDefinition>,

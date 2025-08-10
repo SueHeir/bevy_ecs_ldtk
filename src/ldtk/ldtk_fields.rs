@@ -1,6 +1,6 @@
 //! Contains [`LdtkFields`] trait, providing convenience methods for accessing field instances.
 use crate::ldtk::{
-    all_some_iter::AllSomeIter, EntityInstanceBackend, FieldInstance, FieldValue, Level,
+    all_some_iter::AllSomeIter, EntityInstance, FieldInstance, FieldValue, Level,
     ReferenceToAnEntityInstance, TilesetRectangle,
 };
 use bevy::prelude::*;
@@ -206,7 +206,7 @@ pub trait LdtkFields {
     create_plural_fields_methods!(Points, IVec2);
 }
 
-impl LdtkFields for EntityInstanceBackend {
+impl LdtkFields for EntityInstance {
     fn field_instances(&self) -> &[FieldInstance] {
         &self.field_instances
     }

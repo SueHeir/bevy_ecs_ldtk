@@ -27,7 +27,7 @@ pub trait LdtkIntCellAppExt {
     /// 2. Just `value` is specified
     /// 3. Just `layer_identifier` is specified
     /// 4. Neither `value` nor `layer_identifier` are specified
-    fn register_ldtk_int_cell_for_layer_optional<B: LdtkIntCellBackend + Bundle>(
+    fn register_ldtk_int_cell_for_layer_optional<B: LdtkIntCell + Bundle>(
         &mut self,
         layer_identifier: Option<String>,
         value: Option<i32>,
@@ -65,7 +65,7 @@ pub trait LdtkIntCellAppExt {
     /// ```
     ///
     /// You can find more details on the `#[derive(LdtkIntCell)]` macro at [LdtkIntCell].
-    fn register_ldtk_int_cell_for_layer<B: LdtkIntCellBackend + Bundle>(
+    fn register_ldtk_int_cell_for_layer<B: LdtkIntCell + Bundle>(
         &mut self,
         layer_identifier: &str,
         value: i32,
@@ -78,13 +78,13 @@ pub trait LdtkIntCellAppExt {
 
     /// Similar to [LdtkIntCellAppExt::register_ldtk_int_cell_for_layer], except it applies the
     /// registration to all layers.
-    fn register_ldtk_int_cell<B: LdtkIntCellBackend + Bundle>(&mut self, value: i32) -> &mut Self {
+    fn register_ldtk_int_cell<B: LdtkIntCell + Bundle>(&mut self, value: i32) -> &mut Self {
         self.register_ldtk_int_cell_for_layer_optional::<B>(None, Some(value))
     }
 
     /// Similar to [LdtkIntCellAppExt::register_ldtk_int_cell_for_layer], except it applies the
     /// registration to all tiles on the given layer.
-    fn register_default_ldtk_int_cell_for_layer<B: LdtkIntCellBackend + Bundle>(
+    fn register_default_ldtk_int_cell_for_layer<B: LdtkIntCell + Bundle>(
         &mut self,
         layer_identifier: &str,
     ) -> &mut Self {
@@ -96,13 +96,13 @@ pub trait LdtkIntCellAppExt {
 
     /// Similar to [LdtkIntCellAppExt::register_ldtk_int_cell_for_layer], except it applies the
     /// registration to any tile and any layer.
-    fn register_default_ldtk_int_cell<B: LdtkIntCellBackend + Bundle>(&mut self) -> &mut Self {
+    fn register_default_ldtk_int_cell<B: LdtkIntCell + Bundle>(&mut self) -> &mut Self {
         self.register_ldtk_int_cell_for_layer_optional::<B>(None, None)
     }
 }
 
 impl LdtkIntCellAppExt for App {
-    fn register_ldtk_int_cell_for_layer_optional<B: LdtkIntCellBackend + Bundle>(
+    fn register_ldtk_int_cell_for_layer_optional<B: LdtkIntCell + Bundle>(
         &mut self,
         layer_identifier: Option<String>,
         value: Option<i32>,
@@ -143,7 +143,7 @@ mod tests {
         b: ComponentB,
     }
 
-    impl LdtkIntCellBackend for LdtkIntCellBundle {
+    impl LdtkIntCell for LdtkIntCellBundle {
         fn bundle_int_cell(_: IntGridCell, _: &LayerInstance) -> LdtkIntCellBundle {
             LdtkIntCellBundle::default()
         }

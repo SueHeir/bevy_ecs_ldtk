@@ -27,7 +27,7 @@ pub trait LdtkEntityAppExt {
     /// 2. Just `entity_identifier` is specified
     /// 3. Just `layer_identifier` is specified
     /// 4. Neither `entity_identifier` nor `layer_identifier` are specified
-    fn register_ldtk_entity_for_layer_optional<B: LdtkEntityBackend + Bundle>(
+    fn register_ldtk_entity_for_layer_optional<B: LdtkEntity + Bundle>(
         &mut self,
         layer_identifier: Option<String>,
         entity_identifier: Option<String>,
@@ -65,7 +65,7 @@ pub trait LdtkEntityAppExt {
     /// ```
     ///
     /// You can find more details on the `#[derive(LdtkEntity)]` macro at [LdtkEntity].
-    fn register_ldtk_entity_for_layer<B: LdtkEntityBackend + Bundle>(
+    fn register_ldtk_entity_for_layer<B: LdtkEntity + Bundle>(
         &mut self,
         layer_identifier: &str,
         entity_identifier: &str,
@@ -78,7 +78,7 @@ pub trait LdtkEntityAppExt {
 
     /// Similar to [LdtkEntityAppExt::register_ldtk_entity_for_layer], except it applies the
     /// registration to all layers.
-    fn register_ldtk_entity<B: LdtkEntityBackend + Bundle>(
+    fn register_ldtk_entity<B: LdtkEntity + Bundle>(
         &mut self,
         entity_identifier: &str,
     ) -> &mut Self {
@@ -87,7 +87,7 @@ pub trait LdtkEntityAppExt {
 
     /// Similar to [LdtkEntityAppExt::register_ldtk_entity_for_layer], except it applies the
     /// registration to all entities on the given layer.
-    fn register_default_ldtk_entity_for_layer<B: LdtkEntityBackend + Bundle>(
+    fn register_default_ldtk_entity_for_layer<B: LdtkEntity + Bundle>(
         &mut self,
         layer_identifier: &str,
     ) -> &mut Self {
@@ -96,13 +96,13 @@ pub trait LdtkEntityAppExt {
 
     /// Similar to [LdtkEntityAppExt::register_ldtk_entity_for_layer], except it applies the
     /// registration to any entity and any layer.
-    fn register_default_ldtk_entity<B: LdtkEntityBackend + Bundle>(&mut self) -> &mut Self {
+    fn register_default_ldtk_entity<B: LdtkEntity + Bundle>(&mut self) -> &mut Self {
         self.register_ldtk_entity_for_layer_optional::<B>(None, None)
     }
 }
 
 impl LdtkEntityAppExt for App {
-    fn register_ldtk_entity_for_layer_optional<B: LdtkEntityBackend + Bundle>(
+    fn register_ldtk_entity_for_layer_optional<B: LdtkEntity + Bundle>(
         &mut self,
         layer_identifier: Option<String>,
         entity_identifier: Option<String>,
@@ -130,7 +130,7 @@ impl LdtkEntityAppExt for App {
 mod tests {
     use super::*;
     use crate::{
-        components::EntityInstanceBackend,
+        components::EntityInstance,
         ldtk::{LayerInstance, TilesetDefinition},
     };
 
@@ -146,9 +146,9 @@ mod tests {
         b: ComponentB,
     }
 
-    impl LdtkEntityBackend for LdtkEntityBundle {
+    impl LdtkEntity for LdtkEntityBundle {
         fn bundle_entity(
-            _: &EntityInstanceBackend,
+            _: &EntityInstance,
             _: &LayerInstance,
             _: Option<&Handle<Image>>,
             _: Option<&TilesetDefinition>,

@@ -8,7 +8,7 @@ pub use level_iid::LevelIid;
 mod level_set;
 pub use level_set::LevelSet;
 
-pub use crate::ldtk::EntityInstanceBackend;
+pub use crate::ldtk::EntityInstance;
 use crate::{
     ldtk::{LayerInstance, Type},
     prelude::LdtkProject,
@@ -21,7 +21,7 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(unused_imports)]
 use crate::{
-    prelude::{LdtkEntityBackend, LdtkIntCellBackend},
+    prelude::{LdtkEntity, LdtkIntCell},
     resources::LevelSelection,
 };
 
@@ -59,7 +59,7 @@ impl Worldly {
     ///
     /// Used for the `#[worldly]` attribute macro for `#[derive(LdtkEntity)]`.
     /// See [LdtkEntity#worldly] for more info.
-    pub fn from_entity_info(entity_instance: &EntityInstanceBackend) -> Worldly {
+    pub fn from_entity_info(entity_instance: &EntityInstance) -> Worldly {
         Worldly {
             entity_iid: entity_instance.iid.clone(),
         }
@@ -177,7 +177,7 @@ impl GridCoords {
     /// Used for the `#[grid_coords]` attribute macro for `#[derive(LdtkEntity)]`.
     /// See [LdtkEntity#grid_coords] for more info.
     pub fn from_entity_info(
-        entity_instance: &EntityInstanceBackend,
+        entity_instance: &EntityInstance,
         layer_instance: &LayerInstance,
     ) -> GridCoords {
         ldtk_grid_coords_to_grid_coords(entity_instance.grid, layer_instance.c_hei)
@@ -322,7 +322,7 @@ pub(crate) struct IntGridCellBundle {
 
 #[derive(Clone, Bundle, Default)]
 pub(crate) struct EntityInstanceBundle {
-    pub entity_instance: EntityInstanceBackend,
+    pub entity_instance: EntityInstance,
 }
 
 /// `Component` storing the LDtk project asset handle, marking the root entity for the plugin to spawn levels in.

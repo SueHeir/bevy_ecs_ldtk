@@ -34,7 +34,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[allow(unused_imports)]
-use crate::prelude::LdtkEntityBackend;
+use crate::prelude::LdtkEntity;
 
 pub mod all_some_iter;
 mod color;
@@ -1206,7 +1206,7 @@ pub struct ForcedRefs {
 
     pub entity_def: Option<EntityDefinition>,
 
-    pub entity_instance: Option<EntityInstanceBackend>,
+    pub entity_instance: Option<EntityInstance>,
 
     pub entity_reference_infos: Option<ReferenceToAnEntityInstance>,
 
@@ -1260,7 +1260,7 @@ pub struct ForcedRefs {
 /// Or, you can hook into the entity's spawning process using [LdtkEntity].
 #[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Reflect, Component)]
 #[serde(rename_all = "camelCase")]
-pub struct EntityInstanceBackend {
+pub struct EntityInstance {
     /// Grid-based coordinates (`[x,y]` format)
     #[serde(rename = "__grid")]
     pub grid: IVec2,
@@ -1317,8 +1317,8 @@ pub struct EntityInstanceBackend {
     pub width: i32,
 }
 
-impl From<&EntityInstanceBackend> for EntityInstanceBackend {
-    fn from(value: &EntityInstanceBackend) -> Self {
+impl From<&EntityInstance> for EntityInstance {
+    fn from(value: &EntityInstance) -> Self {
         value.clone()
     }
 }
@@ -1412,7 +1412,7 @@ pub struct LayerInstance {
     /// all tiles behind opaque ones will be discarded.
     pub auto_layer_tiles: Vec<TileInstance>,
 
-    pub entity_instances: Vec<EntityInstanceBackend>,
+    pub entity_instances: Vec<EntityInstance>,
 
     pub grid_tiles: Vec<TileInstance>,
 
