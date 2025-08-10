@@ -1,6 +1,6 @@
 use crate::{
     components::{EntityInstanceBundle, GridCoords, Worldly},
-    ldtk::{EntityInstance, LayerInstance, TilesetDefinition},
+    ldtk::{EntityInstanceBackend, LayerInstance, TilesetDefinition},
     utils,
 };
 use bevy::{ecs::system::EntityCommands, prelude::*};
@@ -323,7 +323,7 @@ pub trait LdtkEntityBackend {
     /// inserted.
     /// So, any custom implementations of these components within this trait will be overwritten.
     fn bundle_entity(
-        entity_instance: &EntityInstance,
+        entity_instance: &EntityInstanceBackend,
         layer_instance: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         tileset_definition: Option<&TilesetDefinition>,
@@ -334,7 +334,7 @@ pub trait LdtkEntityBackend {
 
 impl LdtkEntityBackend for EntityInstanceBundle {
     fn bundle_entity(
-        entity_instance: &EntityInstance,
+        entity_instance: &EntityInstanceBackend,
         _: &LayerInstance,
         _: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -349,7 +349,7 @@ impl LdtkEntityBackend for EntityInstanceBundle {
 
 impl LdtkEntityBackend for Sprite {
     fn bundle_entity(
-        _: &EntityInstance,
+        _: &EntityInstanceBackend,
         _: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -362,7 +362,7 @@ impl LdtkEntityBackend for Sprite {
 
 impl LdtkEntityBackend for Worldly {
     fn bundle_entity(
-        entity_instance: &EntityInstance,
+        entity_instance: &EntityInstanceBackend,
         _: &LayerInstance,
         _: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -375,7 +375,7 @@ impl LdtkEntityBackend for Worldly {
 
 impl LdtkEntityBackend for GridCoords {
     fn bundle_entity(
-        entity_instance: &EntityInstance,
+        entity_instance: &EntityInstanceBackend,
         layer_instance: &LayerInstance,
         _: Option<&Handle<Image>>,
         _: Option<&TilesetDefinition>,
@@ -404,7 +404,7 @@ pub trait PhantomLdtkEntityTrait {
     fn evaluate<'a, 'b>(
         &self,
         commands: &'b mut EntityCommands<'a>,
-        entity_instance: &EntityInstance,
+        entity_instance: &EntityInstanceBackend,
         layer_instance: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         tileset_definition: Option<&TilesetDefinition>,
@@ -417,7 +417,7 @@ impl<B: LdtkEntityBackend + Bundle> PhantomLdtkEntityTrait for PhantomLdtkEntity
     fn evaluate<'a, 'b>(
         &self,
         entity_commands: &'b mut EntityCommands<'a>,
-        entity_instance: &EntityInstance,
+        entity_instance: &EntityInstanceBackend,
         layer_instance: &LayerInstance,
         tileset: Option<&Handle<Image>>,
         tileset_definition: Option<&TilesetDefinition>,

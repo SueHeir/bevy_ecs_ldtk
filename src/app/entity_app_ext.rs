@@ -130,7 +130,7 @@ impl LdtkEntityAppExt for App {
 mod tests {
     use super::*;
     use crate::{
-        components::EntityInstance,
+        components::EntityInstanceBackend,
         ldtk::{LayerInstance, TilesetDefinition},
     };
 
@@ -148,7 +148,7 @@ mod tests {
 
     impl LdtkEntityBackend for LdtkEntityBundle {
         fn bundle_entity(
-            _: &EntityInstance,
+            _: &EntityInstanceBackend,
             _: &LayerInstance,
             _: Option<&Handle<Image>>,
             _: Option<&TilesetDefinition>,

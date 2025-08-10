@@ -60,8 +60,9 @@ pub mod prelude {
         app::{LdtkEntityAppExt, LdtkEntityBackend, LdtkIntCellAppExt, LdtkIntCellBackend},
         assets::{LdtkProject, LevelIndices, LevelMetadataAccessor},
         components::{
-            EntityIid, EntityInstance, GridCoords, IntGridCell, LayerMetadata, LdtkProjectHandle,
-            LdtkWorldBundle, LevelIid, LevelSet, Respawn, TileEnumTags, TileMetadata, Worldly,
+            EntityIid, EntityInstanceBackend, GridCoords, IntGridCell, LayerMetadata,
+            LdtkProjectHandle, LdtkWorldBundle, LevelIid, LevelSet, Respawn, TileEnumTags,
+            TileMetadata, Worldly,
         },
         ldtk::{
             self, ldtk_fields::LdtkFields, raw_level_accessor::RawLevelAccessor, FieldValue,

@@ -1,7 +1,9 @@
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 #[allow(unused_imports)]
-use super::{EntityInstance, GridPoint, Level, ReferenceToAnEntityInstance, TilesetRectangle};
+use super::{
+    EntityInstanceBackend, GridPoint, Level, ReferenceToAnEntityInstance, TilesetRectangle,
+};
 use bevy::prelude::*;
 use regex::Regex;
 
