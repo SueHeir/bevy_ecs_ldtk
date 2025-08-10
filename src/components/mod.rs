@@ -25,7 +25,7 @@ use crate::{
     resources::LevelSelection,
 };
 
-use bevy_ecs_tilemap::tiles::{TileBundle, TilePos};
+// use bevy_ecs_tilemap::tiles::{TileBundle, TilePos};
 
 /// [Component] added to any `IntGrid` tile by default.
 ///
@@ -100,20 +100,20 @@ impl From<GridCoords> for IVec2 {
     }
 }
 
-impl From<TilePos> for GridCoords {
-    fn from(tile_pos: TilePos) -> Self {
-        GridCoords {
-            x: tile_pos.x as i32,
-            y: tile_pos.y as i32,
-        }
-    }
-}
+// impl From<TilePos> for GridCoords {
+//     fn from(tile_pos: TilePos) -> Self {
+//         GridCoords {
+//             x: tile_pos.x as i32,
+//             y: tile_pos.y as i32,
+//         }
+//     }
+// }
 
-impl From<GridCoords> for TilePos {
-    fn from(grid_coords: GridCoords) -> Self {
-        TilePos::new(grid_coords.x as u32, grid_coords.y as u32)
-    }
-}
+// impl From<GridCoords> for TilePos {
+//     fn from(grid_coords: GridCoords) -> Self {
+//         TilePos::new(grid_coords.x as u32, grid_coords.y as u32)
+//     }
+// }
 
 impl Add<GridCoords> for GridCoords {
     type Output = GridCoords;
@@ -311,7 +311,7 @@ pub struct Respawn;
 
 #[derive(Clone, Debug, Default, Bundle)]
 pub(crate) struct TileGridBundle {
-    pub tile_bundle: TileBundle,
+    // pub tile_bundle: TileBundle,
     pub grid_coords: GridCoords,
 }
 

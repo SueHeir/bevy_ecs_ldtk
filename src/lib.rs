@@ -43,7 +43,7 @@ mod level;
 mod plugin;
 mod resources;
 pub mod systems;
-mod tile_makers;
+// mod tile_makers;
 pub mod utils;
 
 pub use components::*;
