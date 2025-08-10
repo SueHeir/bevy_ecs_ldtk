@@ -116,12 +116,12 @@ pub fn expand_ldtk_entity_derive(ast: syn::DeriveInput) -> proc_macro::TokenStre
     };
 
     let gen = quote! {
-        impl #impl_generics bevy_ecs_ldtk::prelude::LdtkEntity for #struct_name #ty_generics #where_clause {
+        impl #impl_generics bevy_ecs_ldtk_backend::prelude::LdtkEntity for #struct_name #ty_generics #where_clause {
             fn bundle_entity(
-                entity_instance: &bevy_ecs_ldtk::prelude::EntityInstance,
-                layer_instance: &bevy_ecs_ldtk::prelude::LayerInstance,
+                entity_instance: &bevy_ecs_ldtk_backend::prelude::EntityInstance,
+                layer_instance: &bevy_ecs_ldtk_backend::prelude::LayerInstance,
                 tileset: Option<&bevy::prelude::Handle<bevy::prelude::Image>>,
-                tileset_definition: Option<&bevy_ecs_ldtk::prelude::TilesetDefinition>,
+                tileset_definition: Option<&bevy_ecs_ldtk_backend::prelude::TilesetDefinition>,
                 asset_server: &bevy::prelude::AssetServer,
                 texture_atlases: &mut bevy::prelude::Assets<bevy::prelude::TextureAtlasLayout>,
             ) -> Self {
@@ -174,7 +174,7 @@ fn expand_sprite_attribute(
         },
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: bevy_ecs_ldtk::utils::sprite_from_entity_info(tileset),
+                #field_name: bevy_ecs_ldtk_backend::utils::sprite_from_entity_info(tileset),
             }
         },
         _ => panic!("#[sprite...] attribute should take the form #[sprite(\"asset/path.png\")] or #[sprite]"),
@@ -267,12 +267,12 @@ fn expand_sprite_sheet_attribute(
             };
 
             quote! {
-                #field_name: bevy_ecs_ldtk::utils::sprite_sheet_from_entity_info(entity_instance, tileset, tileset_definition, texture_atlases, false),
+                #field_name: bevy_ecs_ldtk_backend::utils::sprite_sheet_from_entity_info(entity_instance, tileset, tileset_definition, texture_atlases, false),
             }
         },
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: bevy_ecs_ldtk::utils::sprite_sheet_from_entity_info(entity_instance, tileset, tileset_definition, texture_atlases, true),
+                #field_name: bevy_ecs_ldtk_backend::utils::sprite_sheet_from_entity_info(entity_instance, tileset, tileset_definition, texture_atlases, true),
             }
         },
         _ => panic!("#[sprite_sheet...] attribute should take the form #[sprite_sheet(\"asset/path.png\", tile_width, tile_height, columns, rows, padding, offset, index)], #[sprite_sheet(no_grid)] or #[sprite_sheet]"),
@@ -290,7 +290,7 @@ fn expand_worldly_attribute(
     {
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: bevy_ecs_ldtk::prelude::Worldly::from_entity_info(entity_instance),
+                #field_name: bevy_ecs_ldtk_backend::prelude::Worldly::from_entity_info(entity_instance),
             }
         }
         _ => panic!("#[worldly] attribute should take the form #[worldly]"),
@@ -308,7 +308,7 @@ fn expand_grid_coords_attribute(
     {
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: bevy_ecs_ldtk::prelude::GridCoords::from_entity_info(entity_instance, layer_instance),
+                #field_name: bevy_ecs_ldtk_backend::prelude::GridCoords::from_entity_info(entity_instance, layer_instance),
             }
         }
         _ => panic!("#[grid_coords] attribute should take the form #[grid_coords]"),
@@ -326,7 +326,7 @@ fn expand_ldtk_entity_attribute(
     {
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: <#field_type as bevy_ecs_ldtk::prelude::LdtkEntity>::bundle_entity(entity_instance, layer_instance, tileset, tileset_definition, asset_server, texture_atlases),
+                #field_name: <#field_type as bevy_ecs_ldtk_backend::prelude::LdtkEntity>::bundle_entity(entity_instance, layer_instance, tileset, tileset_definition, asset_server, texture_atlases),
             }
         }
         _ => panic!("#[ldtk_entity] attribute should take the form #[ldtk_entity]"),
@@ -344,7 +344,7 @@ fn expand_from_entity_instance_attribute(
     {
         syn::Meta::Path(_) => {
             quote! {
-                #field_name: <#field_type as From<&bevy_ecs_ldtk::prelude::EntityInstance>>::from(entity_instance),
+                #field_name: <#field_type as From<&bevy_ecs_ldtk_backend::prelude::EntityInstance>>::from(entity_instance),
             }
         }
         _ => {

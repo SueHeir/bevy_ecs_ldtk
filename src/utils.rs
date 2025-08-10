@@ -2,7 +2,7 @@
 
 #[allow(unused_imports)]
 use crate::{
-    app::LdtkEntity,
+    app::LdtkEntityBackend,
     components::{GridCoords, IntGridCell},
 };
 
@@ -72,7 +72,7 @@ pub fn create_layer_definition_map(
 ///
 /// [`Transform`]: https://docs.rs/bevy/latest/bevy/prelude/struct.Transform.html
 pub fn calculate_transform_from_entity_instance(
-    entity_instance: &EntityInstance,
+    entity_instance: &EntityInstanceBackend,
     entity_definition_map: &HashMap<i32, &EntityDefinition>,
     level_height: i32,
 ) -> Transform {
@@ -313,7 +313,7 @@ where
 /// Used for the `#[sprite_sheet]` attribute macro for `#[derive(LdtkEntity)]`.
 /// See [LdtkEntity#sprite_sheet] for more info.
 pub fn sprite_sheet_from_entity_info(
-    entity_instance: &EntityInstance,
+    entity_instance: &EntityInstanceBackend,
     tileset: Option<&Handle<Image>>,
     tileset_definition: Option<&TilesetDefinition>,
     texture_atlases: &mut Assets<TextureAtlasLayout>,
@@ -446,7 +446,7 @@ mod tests {
         let entity_definition_map = create_entity_definition_map(&entity_definitions);
 
         // simple case
-        let entity_instance = EntityInstance {
+        let entity_instance = EntityInstanceBackend {
             px: IVec2::new(256, 256),
             def_uid: 0,
             width: 32,
@@ -459,7 +459,7 @@ mod tests {
         assert_eq!(result, Transform::from_xyz(272., 48., 0.));
 
         // difficult case
-        let entity_instance = EntityInstance {
+        let entity_instance = EntityInstanceBackend {
             px: IVec2::new(40, 50),
             def_uid: 2,
             width: 30,
@@ -492,7 +492,7 @@ mod tests {
         }];
         let entity_definition_map = create_entity_definition_map(&entity_definitions);
 
-        let entity_instance = EntityInstance {
+        let entity_instance = EntityInstanceBackend {
             px: IVec2::new(64, 64),
             def_uid: 0,
             width: 64,

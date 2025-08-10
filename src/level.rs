@@ -2,8 +2,8 @@
 
 use crate::{
     app::{
-        LdtkEntity, LdtkEntityMap, LdtkIntCellMap, PhantomLdtkEntity, PhantomLdtkEntityTrait,
-        PhantomLdtkIntCell, PhantomLdtkIntCellTrait,
+        LdtkEntityBackend, LdtkEntityMap, LdtkIntCellMap, PhantomLdtkEntity,
+        PhantomLdtkEntityTrait, PhantomLdtkIntCell, PhantomLdtkIntCellTrait,
     },
     components::*,
     ldtk::{

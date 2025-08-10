@@ -182,7 +182,7 @@ use std::{collections::HashMap, marker::PhantomData};
 ///     foreign: ForeignComponentWithNoDefault,
 /// }
 /// ```
-pub trait LdtkIntCell {
+pub trait LdtkIntCellBackend {
     /// The constructor used by the plugin when spawning additional components on IntGrid tiles.
     /// If you need access to more of the [World](bevy::prelude::World), you can create a system that queries for
     /// `Added<IntGridCell>`, and flesh out the entity from there, instead of implementing this
@@ -199,18 +199,18 @@ pub trait LdtkIntCell {
     fn bundle_int_cell(int_grid_cell: IntGridCell, layer_instance: &LayerInstance) -> Self;
 }
 
-impl LdtkIntCell for IntGridCellBundle {
+impl LdtkIntCellBackend for IntGridCellBundle {
     fn bundle_int_cell(int_grid_cell: IntGridCell, _: &LayerInstance) -> Self {
         IntGridCellBundle { int_grid_cell }
     }
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Hash)]
-pub struct PhantomLdtkIntCell<B: LdtkIntCell + Bundle> {
+pub struct PhantomLdtkIntCell<B: LdtkIntCellBackend + Bundle> {
     ldtk_int_cell: PhantomData<B>,
 }
 
-impl<B: LdtkIntCell + Bundle> PhantomLdtkIntCell<B> {
+impl<B: LdtkIntCellBackend + Bundle> PhantomLdtkIntCell<B> {
     pub fn new() -> Self {
         PhantomLdtkIntCell::<B> {
             ldtk_int_cell: PhantomData,
@@ -227,7 +227,7 @@ pub trait PhantomLdtkIntCellTrait {
     ) -> &'b mut EntityCommands<'a>;
 }
 
-impl<B: LdtkIntCell + Bundle> PhantomLdtkIntCellTrait for PhantomLdtkIntCell<B> {
+impl<B: LdtkIntCellBackend + Bundle> PhantomLdtkIntCellTrait for PhantomLdtkIntCell<B> {
     fn evaluate<'a, 'b>(
         &self,
         entity_commands: &'b mut EntityCommands<'a>,

@@ -4,7 +4,7 @@ mod ldtk_entity;
 mod ldtk_int_cell;
 
 #[proc_macro_derive(
-    LdtkEntity,
+    LdtkEntityBackend,
     attributes(
         sprite,
         sprite_sheet,
@@ -23,7 +23,7 @@ pub fn ldtk_entity_derive(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_derive(
-    LdtkIntCell,
+    LdtkIntCellBackend,
     attributes(ldtk_int_cell, from_int_grid_cell, with, default)
 )]
 pub fn ldtk_int_cell_derive(input: TokenStream) -> TokenStream {
