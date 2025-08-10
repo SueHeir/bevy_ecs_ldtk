@@ -369,23 +369,23 @@ fn spatial_bundle_for_tiles(grid_coords: GridCoords, grid_size: i32) -> Transfor
 //     }
 // }
 
-// #[allow(clippy::too_many_arguments)]
-// fn insert_tile_metadata_for_layer(
-//     commands: &mut Commands,
-//     tile_storage: &TileStorage,
-//     grid_tiles: &[TileInstance],
-//     layer_instance: &LayerInstance,
-//     metadata_map: &HashMap<i32, TileMetadata>,
-//     enum_tags_map: &HashMap<i32, TileEnumTags>,
-// ) {
-//     for tile in grid_tiles {
-//         let grid_coords = tile_to_grid_coords(tile, layer_instance.c_hei, layer_instance.grid_size);
+#[allow(clippy::too_many_arguments)]
+fn insert_tile_metadata_for_layer(
+    commands: &mut Commands,
+    tile_storage: &TileStorage,
+    grid_tiles: &[TileInstance],
+    layer_instance: &LayerInstance,
+    metadata_map: &HashMap<i32, TileMetadata>,
+    enum_tags_map: &HashMap<i32, TileEnumTags>,
+) {
+    for tile in grid_tiles {
+        let grid_coords = tile_to_grid_coords(tile, layer_instance.c_hei, layer_instance.grid_size);
 
-//         let tile_entity = tile_storage.get(&grid_coords.into()).unwrap();
+        let tile_entity = tile_storage.get(&grid_coords.into()).unwrap();
 
-//         insert_metadata_to_tile(commands, tile, tile_entity, metadata_map, enum_tags_map);
-//     }
-// }
+        insert_metadata_to_tile(commands, tile, tile_entity, metadata_map, enum_tags_map);
+    }
+}
 
 fn layer_grid_tiles(grid_tiles: Vec<TileInstance>) -> Vec<Vec<TileInstance>> {
     let mut layer = Vec::new();
@@ -792,16 +792,16 @@ pub fn spawn_level(
                             }
                         }
 
-                        // if !(metadata_map.is_empty() && enum_tags_map.is_empty()) {
-                        //     insert_tile_metadata_for_layer(
-                        //         commands,
-                        //         &storage,
-                        //         &grid_tiles,
-                        //         layer_instance,
-                        //         &metadata_map,
-                        //         &enum_tags_map,
-                        //     );
-                        // }
+                        if !(metadata_map.is_empty() && enum_tags_map.is_empty()) {
+                            insert_tile_metadata_for_layer(
+                                commands,
+                                &storage,
+                                &grid_tiles,
+                                layer_instance,
+                                &metadata_map,
+                                &enum_tags_map,
+                            );
+                        }
 
                         TilemapBundle {
                             size,
