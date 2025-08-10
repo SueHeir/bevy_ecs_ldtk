@@ -236,7 +236,6 @@ impl AssetLoader for LdtkProjectLoader {
 
         let mut tileset_map: HashMap<i32, Handle<Image>> = HashMap::new();
 
-        #[cfg(feature = "render")]
         for tileset in &data.defs.tilesets {
             if let Some(tileset_path) = &tileset.rel_path {
                 let asset_path = ldtk_path_to_asset_path(load_context.path(), tileset_path);
@@ -249,13 +248,11 @@ impl AssetLoader for LdtkProjectLoader {
                 warn!("{identifier} tileset cannot be loaded, it has a null relative path.");
             }
         }
-        #[cfg(feature = "render")]
+
         let int_grid_image_handle = data
             .defs
             .create_int_grid_image()
             .map(|image| load_context.add_labeled_asset("int_grid_image".to_string(), image));
-        #[cfg(not(feature = "render"))]
-        let int_grid_image_handle = None;
 
         let ldtk_project = if data.external_levels {
             #[cfg(feature = "external_levels")]
