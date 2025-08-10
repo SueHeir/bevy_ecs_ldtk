@@ -436,47 +436,47 @@ pub fn spawn_level(
 
     let mut layer_z = 0;
 
-    if ldtk_settings.level_background == LevelBackground::Rendered {
-        let translation = Vec3::new(*level.px_wid() as f32, *level.px_hei() as f32, 0.) / 2.;
+    // if ldtk_settings.level_background == LevelBackground::Rendered {
+    //     let translation = Vec3::new(*level.px_wid() as f32, *level.px_hei() as f32, 0.) / 2.;
 
-        let background_entity = commands
-            .spawn((
-                Sprite {
-                    color: *level.bg_color(),
-                    custom_size: Some(Vec2::new(*level.px_wid() as f32, *level.px_hei() as f32)),
-                    ..default()
-                },
-                Transform::from_translation(translation),
-            ))
-            .id();
+    //     let background_entity = commands
+    //         .spawn((
+    //             Sprite {
+    //                 color: *level.bg_color(),
+    //                 custom_size: Some(Vec2::new(*level.px_wid() as f32, *level.px_hei() as f32)),
+    //                 ..default()
+    //             },
+    //             Transform::from_translation(translation),
+    //         ))
+    //         .id();
 
-        commands.entity(ldtk_entity).add_child(background_entity);
+    //     commands.entity(ldtk_entity).add_child(background_entity);
 
-        layer_z += 1;
+    //     layer_z += 1;
 
-        // Spawn background image
-        if let (Some(background_image_handle), Some(background_position)) =
-            (background_image, level.bg_pos())
-        {
-            match background_image_sprite_sheet(
-                images,
-                texture_atlases,
-                background_image_handle,
-                background_position,
-                *level.px_hei(),
-                layer_z as f32,
-            ) {
-                Ok(sprite_sheet) => {
-                    commands.entity(ldtk_entity).with_children(|parent| {
-                        parent.spawn(sprite_sheet);
-                    });
+    //     // Spawn background image
+    //     if let (Some(background_image_handle), Some(background_position)) =
+    //         (background_image, level.bg_pos())
+    //     {
+    //         match background_image_sprite_sheet(
+    //             images,
+    //             texture_atlases,
+    //             background_image_handle,
+    //             background_position,
+    //             *level.px_hei(),
+    //             layer_z as f32,
+    //         ) {
+    //             Ok(sprite_sheet) => {
+    //                 commands.entity(ldtk_entity).with_children(|parent| {
+    //                     parent.spawn(sprite_sheet);
+    //                 });
 
-                    layer_z += 1;
-                }
-                Err(e) => warn!("{}", e),
-            }
-        }
-    }
+    //                 layer_z += 1;
+    //             }
+    //             Err(e) => warn!("{}", e),
+    //         }
+    //     }
+    // }
 
     for layer_instance in layer_instances
         .iter()

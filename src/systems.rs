@@ -316,6 +316,8 @@ pub fn process_ldtk_levels(
                         level_events.write(LevelEvent::Spawned(LevelIid::new(
                             loaded_level.iid().clone(),
                         )));
+                    } else {
+                        info!("Could not spawn level");
                     }
 
                     if respawn.is_some() {
