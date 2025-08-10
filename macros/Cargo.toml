@@ -1,5 +1,5 @@
 [package]
-name = "bevy_ecs_ldtk_macros"
+name = "bevy_ecs_ldtk_backend_macros"
 description = "Derive macros for bevy_ecs_ldtk."
 version = "0.12.0"
 edition = "2021"
