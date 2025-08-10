@@ -309,7 +309,7 @@ use std::{collections::HashMap, marker::PhantomData};
 ///     foreign: ForeignComponentWithNoDefault,
 /// }
 /// ```
-pub trait LdtkEntity {
+pub trait LdtkEntityBackend {
     /// The constructor used by the plugin when spawning entities from an LDtk file.
     /// Has access to resources/assets most commonly used for spawning 2d objects.
     /// If you need access to more of the [World](bevy::prelude::World), you can create a system that queries for
@@ -332,7 +332,7 @@ pub trait LdtkEntity {
     ) -> Self;
 }
 
-impl LdtkEntity for EntityInstanceBundle {
+impl LdtkEntityBackend for EntityInstanceBundle {
     fn bundle_entity(
         entity_instance: &EntityInstance,
         _: &LayerInstance,
@@ -347,7 +347,7 @@ impl LdtkEntity for EntityInstanceBundle {
     }
 }
 
-impl LdtkEntity for Sprite {
+impl LdtkEntityBackend for Sprite {
     fn bundle_entity(
         _: &EntityInstance,
         _: &LayerInstance,
@@ -360,7 +360,7 @@ impl LdtkEntity for Sprite {
     }
 }
 
-impl LdtkEntity for Worldly {
+impl LdtkEntityBackend for Worldly {
     fn bundle_entity(
         entity_instance: &EntityInstance,
         _: &LayerInstance,
@@ -373,7 +373,7 @@ impl LdtkEntity for Worldly {
     }
 }
 
-impl LdtkEntity for GridCoords {
+impl LdtkEntityBackend for GridCoords {
     fn bundle_entity(
         entity_instance: &EntityInstance,
         layer_instance: &LayerInstance,
@@ -387,11 +387,11 @@ impl LdtkEntity for GridCoords {
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug, Default, Hash)]
-pub struct PhantomLdtkEntity<B: LdtkEntity + Bundle> {
+pub struct PhantomLdtkEntity<B: LdtkEntityBackend + Bundle> {
     ldtk_entity: PhantomData<B>,
 }
 
-impl<B: LdtkEntity + Bundle> PhantomLdtkEntity<B> {
+impl<B: LdtkEntityBackend + Bundle> PhantomLdtkEntity<B> {
     pub fn new() -> Self {
         PhantomLdtkEntity::<B> {
             ldtk_entity: PhantomData,
@@ -413,7 +413,7 @@ pub trait PhantomLdtkEntityTrait {
     ) -> &'b mut EntityCommands<'a>;
 }
 
-impl<B: LdtkEntity + Bundle> PhantomLdtkEntityTrait for PhantomLdtkEntity<B> {
+impl<B: LdtkEntityBackend + Bundle> PhantomLdtkEntityTrait for PhantomLdtkEntity<B> {
     fn evaluate<'a, 'b>(
         &self,
         entity_commands: &'b mut EntityCommands<'a>,

@@ -2,7 +2,7 @@
 
 #[allow(unused_imports)]
 use crate::{
-    app::LdtkEntity,
+    app::LdtkEntityBackend,
     components::{GridCoords, IntGridCell},
 };
 

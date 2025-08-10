@@ -21,7 +21,7 @@ use std::ops::{Add, AddAssign, Mul, MulAssign, Sub, SubAssign};
 
 #[allow(unused_imports)]
 use crate::{
-    prelude::{LdtkEntity, LdtkIntCell},
+    prelude::{LdtkEntityBackend, LdtkIntCellBackend},
     resources::LevelSelection,
 };
 

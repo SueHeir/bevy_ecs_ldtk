@@ -34,7 +34,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[allow(unused_imports)]
-use crate::prelude::LdtkEntity;
+use crate::prelude::LdtkEntityBackend;
 
 pub mod all_some_iter;
 mod color;
