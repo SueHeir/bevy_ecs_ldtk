@@ -36,7 +36,7 @@ bevy-inspector-egui = "0.31"
 
 [features]
 default = ["derive","internal_levels"]
-derive = ["bevy_ecs_ldtk_macros"]
+derive = ["bevy_ecs_ldtk_backend_macros"]
 atlas = []
 render = []
 internal_levels = []
