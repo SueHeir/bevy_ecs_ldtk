@@ -1,5 +1,8 @@
 //! Provides [LdtkPlugin] and its scheduling-related dependencies.
-use crate::{app, assets, components, resources, systems};
+use crate::{
+    app::{self, LdtkEntityMapBackend, LdtkIntCellMapBackend},
+    assets, components, resources, systems,
+};
 use bevy::{
     app::MainScheduleOrder, ecs::schedule::ScheduleLabel, prelude::*, transform::TransformSystem,
 };
@@ -48,6 +51,10 @@ impl Plugin for LdtkPlugin {
             )
             .init_non_send_resource::<app::LdtkEntityMapBackend>()
             .init_non_send_resource::<app::LdtkIntCellMapBackend>()
+            .add_systems(Startup, |world: &mut World| {
+                world.init_non_send_resource::<LdtkEntityMapBackend>();
+                world.init_non_send_resource::<LdtkIntCellMapBackend>();
+            })
             .init_resource::<resources::LdtkSettings>()
             .add_event::<resources::LevelEvent>()
             .add_systems(
