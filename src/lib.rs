@@ -51,7 +51,7 @@ pub use plugin::*;
 pub use resources::*;
 
 #[cfg(feature = "derive")]
-pub use bevy_ecs_ldtk_macros::*;
+pub use bevy_ecs_ldtk_backend_macros::*;
 
 pub mod prelude {
     //! `use bevy_ecs_ldtk::prelude::*;` to import commonly used items.
