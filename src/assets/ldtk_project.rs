@@ -183,11 +183,7 @@ fn load_level_metadata(
     level: &Level,
     expect_level_loaded: bool,
 ) -> Result<LevelMetadata, LdtkProjectLoaderError> {
-    let bg_image = level.bg_rel_path.as_ref().map(|rel_path| {
-        let asset_path = ldtk_path_to_asset_path(load_context.path(), rel_path);
-
-        load_context.load(asset_path)
-    });
+    let bg_image = None;
 
     if expect_level_loaded && level.layer_instances.is_none() {
         Err(LdtkProjectLoaderError::InternalLevelWithNullLayers)?;
