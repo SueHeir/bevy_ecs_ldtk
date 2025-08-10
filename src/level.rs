@@ -347,27 +347,27 @@ fn spatial_bundle_for_tiles(grid_coords: GridCoords, grid_size: i32) -> Transfor
     Transform::from_translation(translation)
 }
 
-// fn insert_spatial_bundle_for_layer_tiles(
-//     commands: &mut Commands,
-//     storage: &TileStorage,
-//     size: &TilemapSize,
-//     grid_size: i32,
-//     tilemap_id: TilemapId,
-// ) {
-//     for x in 0..size.x {
-//         for y in 0..size.y {
-//             let tile_pos = TilePos { x, y };
-//             let tile_entity = storage.get(&tile_pos);
+fn insert_spatial_bundle_for_layer_tiles(
+    commands: &mut Commands,
+    storage: &TileStorage,
+    size: &TilemapSize,
+    grid_size: i32,
+    tilemap_id: TilemapId,
+) {
+    for x in 0..size.x {
+        for y in 0..size.y {
+            let tile_pos = TilePos { x, y };
+            let tile_entity = storage.get(&tile_pos);
 
-//             if let Some(tile_entity) = tile_entity {
-//                 let spatial_bundle = spatial_bundle_for_tiles(tile_pos.into(), grid_size);
+            if let Some(tile_entity) = tile_entity {
+                let spatial_bundle = spatial_bundle_for_tiles(tile_pos.into(), grid_size);
 
-//                 commands.entity(tile_entity).insert(spatial_bundle);
-//                 commands.entity(tilemap_id.0).add_child(tile_entity);
-//             }
-//         }
-//     }
-// }
+                commands.entity(tile_entity).insert(spatial_bundle);
+                commands.entity(tilemap_id.0).add_child(tile_entity);
+            }
+        }
+    }
+}
 
 #[allow(clippy::too_many_arguments)]
 fn insert_tile_metadata_for_layer(
@@ -814,13 +814,13 @@ pub fn spawn_level(
                         TilemapBundle { size, storage }
                     };
 
-                    // insert_spatial_bundle_for_layer_tiles(
-                    //     commands,
-                    //     &tilemap_bundle.storage,
-                    //     &tilemap_bundle.size,
-                    //     layer_instance.grid_size,
-                    //     TilemapId(layer_entity),
-                    // );
+                    insert_spatial_bundle_for_layer_tiles(
+                        commands,
+                        &tilemap_bundle.storage,
+                        &tilemap_bundle.size,
+                        layer_instance.grid_size,
+                        TilemapId(layer_entity),
+                    );
 
                     let LayerDefinition {
                         tile_pivot_x,
