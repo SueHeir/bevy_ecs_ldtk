@@ -11,6 +11,10 @@ use crate::{
         LevelBackgroundPosition, TileCustomMetadata, TileInstance, TilesetDefinition, Type,
     },
     resources::{IntGridRendering, LdtkSettings, LevelBackground},
+    tile_makers::{
+        tile_pos_to_invisible_tile, tile_pos_to_tile_grid_bundle_maker,
+        tile_pos_to_tile_if_int_grid_nonzero_maker, tile_pos_to_transparent_tile_maker,
+    },
     utils::*,
 };
 
@@ -36,6 +40,13 @@ use std::collections::{HashMap, HashSet};
 // use bevy_ecs_tilemap::StandardTilemapBundle as TilemapBundle;
 
 use thiserror::Error;
+
+/// The default tilemap bundle. All of the components within are required.
+#[derive(Bundle, Debug, Default, Clone)]
+pub struct TilemapBundle {
+    pub size: TilemapSize,
+    pub storage: TileStorage,
+}
 
 /// A component which stores a reference to the tilemap entity.
 #[derive(Component, Reflect, Clone, Copy, Debug, Hash, Deref, DerefMut, PartialEq, Eq)]
@@ -725,23 +736,23 @@ pub fn spawn_level(
                                         // );
                                     }
                                     IntGridRendering::Invisible => {
-                                        // set_all_tiles_with_func(
-                                        //     commands,
-                                        //     &mut storage,
-                                        //     size,
-                                        //     TilemapId(layer_entity),
-                                        //     tile_pos_to_tile_grid_bundle_maker(
-                                        //         tile_pos_to_transparent_tile_maker(
-                                        //             tile_pos_to_tile_if_int_grid_nonzero_maker(
-                                        //                 tile_pos_to_invisible_tile,
-                                        //                 &layer_instance.int_grid_csv,
-                                        //                 layer_instance.c_wid,
-                                        //                 layer_instance.c_hei,
-                                        //             ),
-                                        //             layer_instance.opacity,
-                                        //         ),
-                                        //     ),
-                                        // );
+                                        set_all_tiles_with_func(
+                                            commands,
+                                            &mut storage,
+                                            size,
+                                            TilemapId(layer_entity),
+                                            tile_pos_to_tile_grid_bundle_maker(
+                                                tile_pos_to_transparent_tile_maker(
+                                                    tile_pos_to_tile_if_int_grid_nonzero_maker(
+                                                        tile_pos_to_invisible_tile,
+                                                        &layer_instance.int_grid_csv,
+                                                        layer_instance.c_wid,
+                                                        layer_instance.c_hei,
+                                                    ),
+                                                    layer_instance.opacity,
+                                                ),
+                                            ),
+                                        );
                                     }
                                 }
                             }
@@ -792,61 +803,15 @@ pub fn spawn_level(
                         //     );
                         // }
 
-                        // TilemapBundle {
-                        //     grid_size: tilemap_grid_size,
-                        //     size,
-                        //     spacing,
-                        //     storage,
-                        //     texture: texture.clone(),
-                        //     tile_size: tilemap_tile_size,
-                        //     ..default()
-                        // }
+                        TilemapBundle {
+                            size,
+                            storage,
+                            ..default()
+                        }
                     } else {
-                        // let tile_bundle_maker =
-                        //     tile_pos_to_tile_grid_bundle_maker(tile_pos_to_transparent_tile_maker(
-                        //         tile_pos_to_tile_maker(
-                        //             &grid_tiles,
-                        //             layer_instance.c_hei,
-                        //             layer_instance.grid_size,
-                        //         ),
-                        //         layer_instance.opacity,
-                        //     ));
+                        let storage = TileStorage::empty(size);
 
-                        // // When we add metadata to tiles, we need to add additional
-                        // // components to them.
-                        // // This can't be accomplished using LayerBuilder::new_batch,
-                        // // so the logic for building layers with metadata is slower.
-
-                        // let mut storage = TileStorage::empty(size);
-
-                        // set_all_tiles_with_func(
-                        //     commands,
-                        //     &mut storage,
-                        //     size,
-                        //     TilemapId(layer_entity),
-                        //     tile_bundle_maker,
-                        // );
-
-                        // if !(metadata_map.is_empty() && enum_tags_map.is_empty()) {
-                        //     insert_tile_metadata_for_layer(
-                        //         commands,
-                        //         &storage,
-                        //         &grid_tiles,
-                        //         layer_instance,
-                        //         &metadata_map,
-                        //         &enum_tags_map,
-                        //     );
-                        // }
-
-                        // TilemapBundle {
-                        //     grid_size: tilemap_grid_size,
-                        //     size,
-                        //     spacing,
-                        //     storage,
-                        //     texture: texture.clone(),
-                        //     tile_size: tilemap_tile_size,
-                        //     ..default()
-                        // }
+                        TilemapBundle { size, storage }
                     };
 
                     // insert_spatial_bundle_for_layer_tiles(

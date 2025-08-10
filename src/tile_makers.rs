@@ -220,39 +220,29 @@ pub(crate) fn tile_pos_to_int_grid_with_grid_tiles_tile_maker(
 // /// resulting tile to be transparent.
 // ///
 // /// Used for spawning Tile, AutoTile, and IntGrid layers.
-// pub(crate) fn tile_pos_to_transparent_tile_maker(
-//     mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
-//     alpha: f32,
-// ) -> impl FnMut(TilePos) -> Option<TileBundle> {
-//     move |tile_pos: TilePos| -> Option<TileBundle> {
-//         if alpha < 1. {
-//             tile_maker(tile_pos).map(|mut tile| {
-//                 tile.color.0.set_alpha(alpha);
-//                 tile
-//             })
-//         } else {
-//             tile_maker(tile_pos)
-//         }
-//     }
-// }
+pub(crate) fn tile_pos_to_transparent_tile_maker(
+    mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
+    alpha: f32,
+) -> impl FnMut(TilePos) -> Option<TileBundle> {
+    move |tile_pos: TilePos| -> Option<TileBundle> { tile_maker(tile_pos) }
+}
 
 // /// Returns a tile bundle maker that returns the bundled result of the provided tile maker.
 // ///
 // /// Used for spawning Tile, AutoTile, and IntGrid layers.
-// pub(crate) fn tile_pos_to_tile_grid_bundle_maker(
-//     mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
-// ) -> impl FnMut(TilePos) -> Option<TileGridBundle> {
-//     move |tile_pos: TilePos| -> Option<TileGridBundle> {
-//         tile_maker(tile_pos).map(|mut tile_bundle| {
-//             tile_bundle.position = tile_pos;
+pub(crate) fn tile_pos_to_tile_grid_bundle_maker(
+    mut tile_maker: impl FnMut(TilePos) -> Option<TileBundle>,
+) -> impl FnMut(TilePos) -> Option<TileGridBundle> {
+    move |tile_pos: TilePos| -> Option<TileGridBundle> {
+        tile_maker(tile_pos).map(|mut tile_bundle| {
+            tile_bundle.position = tile_pos;
 
-//             TileGridBundle {
-//                 grid_coords: tile_pos.into(),
-//                 tile_bundle,
-//             }
-//         })
-//     }
-// }
+            TileGridBundle {
+                grid_coords: tile_pos.into(),
+            }
+        })
+    }
+}
 
 // #[cfg(test)]
 // mod tests {
