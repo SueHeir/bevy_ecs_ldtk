@@ -316,6 +316,7 @@ pub fn process_ldtk_levels(
                         level_events.write(LevelEvent::Spawned(LevelIid::new(
                             loaded_level.iid().clone(),
                         )));
+                        info!("loaded level");
                     } else {
                         info!("Could not spawn level");
                     }
@@ -325,6 +326,8 @@ pub fn process_ldtk_levels(
                     }
                 }
             }
+        } else {
+            info!("already processed");
         }
     }
 }
