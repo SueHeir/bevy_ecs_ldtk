@@ -62,7 +62,7 @@ impl MapEntities for TilemapId {
 
 impl Default for TilemapId {
     fn default() -> Self {
-        Self(Entity::from_raw_u32(0))
+        Self(Entity::from_raw_u32(0).expect("bsREASON"))
     }
 }
 
