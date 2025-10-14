@@ -4,7 +4,7 @@ use crate::{
     assets, components, resources, systems,
 };
 use bevy::{
-    app::MainScheduleOrder, ecs::schedule::ScheduleLabel, prelude::*, transform::TransformSystem,
+    app::MainScheduleOrder, ecs::schedule::ScheduleLabel, prelude::*, transform::TransformSystems,
 };
 
 /// Schedule for processing this plugin's ECS API, inserted after [Update].
@@ -74,7 +74,7 @@ impl Plugin for LdtkPlugin {
                 (
                     systems::detect_level_spawned_events
                         .pipe(systems::fire_level_transformed_events),
-                    systems::worldly_adoption.after(TransformSystem::TransformPropagate),
+                    systems::worldly_adoption,
                 ),
             )
             .register_type::<components::LevelIid>()
