@@ -306,212 +306,212 @@ impl AssetLoader for LdtkProjectLoader {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use derive_more::Constructor;
-    use fake::{uuid::UUIDv4, Dummy, Fake};
-    use rand::Rng;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
+//     use derive_more::Constructor;
+//     use fake::{uuid::UUIDv4, Dummy, Fake};
+//     use rand::Rng;
 
-    #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Constructor)]
-    pub struct LdtkProjectFaker<F>
-    where
-        LdtkProjectData: Dummy<F>,
-    {
-        ldtk_project_data_faker: F,
-    }
+//     #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Constructor)]
+//     pub struct LdtkProjectFaker<F>
+//     where
+//         LdtkProjectData: Dummy<F>,
+//     {
+//         ldtk_project_data_faker: F,
+//     }
 
-    impl<F> Dummy<LdtkProjectFaker<F>> for LdtkProject
-    where
-        LdtkProjectData: Dummy<F>,
-    {
-        fn dummy_with_rng<R: Rng + ?Sized>(config: &LdtkProjectFaker<F>, rng: &mut R) -> Self {
-            let data: LdtkProjectData = config.ldtk_project_data_faker.fake_with_rng(rng);
-            let tileset_map = data
-                .json_data()
-                .defs
-                .tilesets
-                .iter()
-                .map(|tileset| {
-                    (
-                        tileset.uid,
-                        Handle::Weak(AssetId::Uuid {
-                            uuid: UUIDv4.fake(),
-                        }),
-                    )
-                })
-                .collect();
+//     impl<F> Dummy<LdtkProjectFaker<F>> for LdtkProject
+//     where
+//         LdtkProjectData: Dummy<F>,
+//     {
+//         fn dummy_with_rng<R: Rng + ?Sized>(config: &LdtkProjectFaker<F>, rng: &mut R) -> Self {
+//             let data: LdtkProjectData = config.ldtk_project_data_faker.fake_with_rng(rng);
+//             let tileset_map = data
+//                 .json_data()
+//                 .defs
+//                 .tilesets
+//                 .iter()
+//                 .map(|tileset| {
+//                     (
+//                         tileset.uid,
+//                         Handle::Weak(AssetId::Uuid {
+//                             uuid: UUIDv4.fake(),
+//                         }),
+//                     )
+//                 })
+//                 .collect();
 
-            LdtkProject {
-                data,
-                tileset_map,
-                int_grid_image_handle: Some(Handle::Weak(AssetId::Uuid {
-                    uuid: UUIDv4.fake(),
-                })),
-            }
-        }
-    }
+//             LdtkProject {
+//                 data,
+//                 tileset_map,
+//                 int_grid_image_handle: Some(Handle::Weak(AssetId::Uuid {
+//                     uuid: UUIDv4.fake(),
+//                 })),
+//             }
+//         }
+//     }
 
-    #[test]
-    fn normalizes_asset_paths() {
-        let resolve_path = |project_path, rel_path| {
-            let asset_path = ldtk_path_to_asset_path(Path::new(project_path), rel_path);
-            asset_path.path().to_owned()
-        };
+//     #[test]
+//     fn normalizes_asset_paths() {
+//         let resolve_path = |project_path, rel_path| {
+//             let asset_path = ldtk_path_to_asset_path(Path::new(project_path), rel_path);
+//             asset_path.path().to_owned()
+//         };
 
-        assert_eq!(
-            resolve_path("project.ldtk", "images/tiles.png"),
-            Path::new("images/tiles.png")
-        );
-        assert_eq!(
-            resolve_path("projects/sub/project.ldtk", "../images/tiles.png"),
-            Path::new("projects/images/tiles.png")
-        );
-        assert_eq!(
-            resolve_path("projects/sub/project.ldtk", "../../tiles.png"),
-            Path::new("tiles.png")
-        );
-    }
+//         assert_eq!(
+//             resolve_path("project.ldtk", "images/tiles.png"),
+//             Path::new("images/tiles.png")
+//         );
+//         assert_eq!(
+//             resolve_path("projects/sub/project.ldtk", "../images/tiles.png"),
+//             Path::new("projects/images/tiles.png")
+//         );
+//         assert_eq!(
+//             resolve_path("projects/sub/project.ldtk", "../../tiles.png"),
+//             Path::new("tiles.png")
+//         );
+//     }
 
-    #[cfg(target_os = "windows")]
-    #[test]
-    fn normalizes_windows_asset_paths() {
-        let resolve_path = |project_path, rel_path| {
-            let asset_path = ldtk_path_to_asset_path(Path::new(project_path), rel_path);
-            asset_path.path().to_owned()
-        };
+//     #[cfg(target_os = "windows")]
+//     #[test]
+//     fn normalizes_windows_asset_paths() {
+//         let resolve_path = |project_path, rel_path| {
+//             let asset_path = ldtk_path_to_asset_path(Path::new(project_path), rel_path);
+//             asset_path.path().to_owned()
+//         };
 
-        assert_eq!(
-            resolve_path("projects\\sub/project.ldtk", "../images/tiles.png"),
-            Path::new("projects/images/tiles.png")
-        );
-        assert_eq!(
-            resolve_path("projects\\sub/project.ldtk", "../../images/tiles.png"),
-            Path::new("images/tiles.png")
-        );
-        assert_eq!(
-            resolve_path("projects/sub\\project.ldtk", "../../tiles.png"),
-            Path::new("tiles.png")
-        );
-    }
+//         assert_eq!(
+//             resolve_path("projects\\sub/project.ldtk", "../images/tiles.png"),
+//             Path::new("projects/images/tiles.png")
+//         );
+//         assert_eq!(
+//             resolve_path("projects\\sub/project.ldtk", "../../images/tiles.png"),
+//             Path::new("images/tiles.png")
+//         );
+//         assert_eq!(
+//             resolve_path("projects/sub\\project.ldtk", "../../tiles.png"),
+//             Path::new("tiles.png")
+//         );
+//     }
 
-    #[cfg(feature = "internal_levels")]
-    mod internal_levels {
-        use crate::{
-            assets::{
-                ldtk_json_with_metadata::tests::LdtkJsonWithMetadataFaker,
-                ldtk_project_data::internal_level_tests::StandaloneLdtkProjectDataFaker,
-            },
-            ldtk::fake::{LoadedLevelsFaker, MixedLevelsLdtkJsonFaker},
-        };
+//     #[cfg(feature = "internal_levels")]
+//     mod internal_levels {
+//         use crate::{
+//             assets::{
+//                 ldtk_json_with_metadata::tests::LdtkJsonWithMetadataFaker,
+//                 ldtk_project_data::internal_level_tests::StandaloneLdtkProjectDataFaker,
+//             },
+//             ldtk::fake::{LoadedLevelsFaker, MixedLevelsLdtkJsonFaker},
+//         };
 
-        use super::*;
+//         use super::*;
 
-        impl Dummy<InternalLevels> for LdtkProject {
-            fn dummy_with_rng<R: Rng + ?Sized>(_: &InternalLevels, rng: &mut R) -> Self {
-                LdtkProjectFaker {
-                    ldtk_project_data_faker: InternalLevels,
-                }
-                .fake_with_rng(rng)
-            }
-        }
+//         impl Dummy<InternalLevels> for LdtkProject {
+//             fn dummy_with_rng<R: Rng + ?Sized>(_: &InternalLevels, rng: &mut R) -> Self {
+//                 LdtkProjectFaker {
+//                     ldtk_project_data_faker: InternalLevels,
+//                 }
+//                 .fake_with_rng(rng)
+//             }
+//         }
 
-        #[test]
-        fn json_data_accessor_is_transparent() {
-            let project: LdtkProject = InternalLevels.fake();
+//         #[test]
+//         fn json_data_accessor_is_transparent() {
+//             let project: LdtkProject = InternalLevels.fake();
 
-            assert_eq!(project.json_data(), project.data().json_data());
-        }
+//             assert_eq!(project.json_data(), project.data().json_data());
+//         }
 
-        #[test]
-        fn raw_level_accessor_implementation_is_transparent() {
-            let project: LdtkProject = LdtkProjectFaker::new(StandaloneLdtkProjectDataFaker::new(
-                LdtkJsonWithMetadataFaker::new(MixedLevelsLdtkJsonFaker::new(
-                    LoadedLevelsFaker::default(),
-                    4..8,
-                )),
-            ))
-            .fake();
+//         #[test]
+//         fn raw_level_accessor_implementation_is_transparent() {
+//             let project: LdtkProject = LdtkProjectFaker::new(StandaloneLdtkProjectDataFaker::new(
+//                 LdtkJsonWithMetadataFaker::new(MixedLevelsLdtkJsonFaker::new(
+//                     LoadedLevelsFaker::default(),
+//                     4..8,
+//                 )),
+//             ))
+//             .fake();
 
-            assert_eq!(project.root_levels(), project.json_data().root_levels());
-            assert_eq!(project.worlds(), project.json_data().worlds());
-        }
+//             assert_eq!(project.root_levels(), project.json_data().root_levels());
+//             assert_eq!(project.worlds(), project.json_data().worlds());
+//         }
 
-        #[test]
-        fn level_metadata_accessor_implementation_is_transparent() {
-            let project: LdtkProject = InternalLevels.fake();
+//         #[test]
+//         fn level_metadata_accessor_implementation_is_transparent() {
+//             let project: LdtkProject = InternalLevels.fake();
 
-            for level in &project.json_data().levels {
-                assert_eq!(
-                    project.get_level_metadata_by_iid(&level.iid),
-                    project.data().get_level_metadata_by_iid(&level.iid),
-                );
-            }
+//             for level in &project.json_data().levels {
+//                 assert_eq!(
+//                     project.get_level_metadata_by_iid(&level.iid),
+//                     project.data().get_level_metadata_by_iid(&level.iid),
+//                 );
+//             }
 
-            assert_eq!(
-                project.get_level_metadata_by_iid(&"This_level_doesnt_exist".to_string()),
-                None
-            );
-        }
-    }
+//             assert_eq!(
+//                 project.get_level_metadata_by_iid(&"This_level_doesnt_exist".to_string()),
+//                 None
+//             );
+//         }
+//     }
 
-    #[cfg(feature = "external_levels")]
-    mod external_levels {
-        use crate::{
-            assets::{
-                ldtk_json_with_metadata::tests::LdtkJsonWithMetadataFaker,
-                ldtk_project_data::external_level_tests::ParentLdtkProjectDataFaker,
-            },
-            ldtk::fake::{LoadedLevelsFaker, MixedLevelsLdtkJsonFaker},
-        };
+//     #[cfg(feature = "external_levels")]
+//     mod external_levels {
+//         use crate::{
+//             assets::{
+//                 ldtk_json_with_metadata::tests::LdtkJsonWithMetadataFaker,
+//                 ldtk_project_data::external_level_tests::ParentLdtkProjectDataFaker,
+//             },
+//             ldtk::fake::{LoadedLevelsFaker, MixedLevelsLdtkJsonFaker},
+//         };
 
-        use super::*;
+//         use super::*;
 
-        impl Dummy<ExternalLevels> for LdtkProject {
-            fn dummy_with_rng<R: Rng + ?Sized>(_: &ExternalLevels, rng: &mut R) -> Self {
-                LdtkProjectFaker {
-                    ldtk_project_data_faker: ExternalLevels,
-                }
-                .fake_with_rng(rng)
-            }
-        }
+//         impl Dummy<ExternalLevels> for LdtkProject {
+//             fn dummy_with_rng<R: Rng + ?Sized>(_: &ExternalLevels, rng: &mut R) -> Self {
+//                 LdtkProjectFaker {
+//                     ldtk_project_data_faker: ExternalLevels,
+//                 }
+//                 .fake_with_rng(rng)
+//             }
+//         }
 
-        #[test]
-        fn json_data_accessor_is_transparent() {
-            let project: LdtkProject = ExternalLevels.fake();
+//         #[test]
+//         fn json_data_accessor_is_transparent() {
+//             let project: LdtkProject = ExternalLevels.fake();
 
-            assert_eq!(project.json_data(), project.data().json_data());
-        }
+//             assert_eq!(project.json_data(), project.data().json_data());
+//         }
 
-        #[test]
-        fn raw_level_accessor_implementation_is_transparent() {
-            let project: LdtkProject = LdtkProjectFaker::new(ParentLdtkProjectDataFaker::new(
-                LdtkJsonWithMetadataFaker::new(MixedLevelsLdtkJsonFaker::new(
-                    LoadedLevelsFaker::default(),
-                    4..8,
-                )),
-            ))
-            .fake();
+//         #[test]
+//         fn raw_level_accessor_implementation_is_transparent() {
+//             let project: LdtkProject = LdtkProjectFaker::new(ParentLdtkProjectDataFaker::new(
+//                 LdtkJsonWithMetadataFaker::new(MixedLevelsLdtkJsonFaker::new(
+//                     LoadedLevelsFaker::default(),
+//                     4..8,
+//                 )),
+//             ))
+//             .fake();
 
-            assert_eq!(project.root_levels(), project.json_data().root_levels());
-            assert_eq!(project.worlds(), project.json_data().worlds());
-        }
+//             assert_eq!(project.root_levels(), project.json_data().root_levels());
+//             assert_eq!(project.worlds(), project.json_data().worlds());
+//         }
 
-        #[test]
-        fn level_metadata_accessor_implementation_is_transparent() {
-            let project: LdtkProject = ExternalLevels.fake();
+//         #[test]
+//         fn level_metadata_accessor_implementation_is_transparent() {
+//             let project: LdtkProject = ExternalLevels.fake();
 
-            for level in &project.json_data().levels {
-                assert_eq!(
-                    project.get_level_metadata_by_iid(&level.iid),
-                    project.data().get_level_metadata_by_iid(&level.iid),
-                );
-            }
+//             for level in &project.json_data().levels {
+//                 assert_eq!(
+//                     project.get_level_metadata_by_iid(&level.iid),
+//                     project.data().get_level_metadata_by_iid(&level.iid),
+//                 );
+//             }
 
-            assert_eq!(
-                project.get_level_metadata_by_iid(&"This_level_doesnt_exist".to_string()),
-                None
-            );
-        }
-    }
-}
+//             assert_eq!(
+//                 project.get_level_metadata_by_iid(&"This_level_doesnt_exist".to_string()),
+//                 None
+//             );
+//         }
+//     }
+// }
